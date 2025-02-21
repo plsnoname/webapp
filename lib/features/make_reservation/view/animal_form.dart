@@ -1,5 +1,6 @@
 import 'package:fatcherappv2/features/authentication/login_guard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../components/general_text_field.dart';
 import '../components/general_dropdown_field.dart';
 
@@ -23,6 +24,16 @@ class _AnimalFormPageState extends State<AnimalFormPage> {
   String? _otherAnimal;
   String? _age;
   String? _sex;
+
+  Future<void> _saveToStorage() async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'Animal Type', value: _animalType);
+    await storage.write(key: 'Dog Size', value: _dogSize);
+    await storage.write(key: 'Animal Name', value: _animalName);
+    await storage.write(key: 'Other Animal', value: _otherAnimal);
+    await storage.write(key: 'Age', value: _age);
+    await storage.write(key: 'Sex', value: _sex);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +122,10 @@ class _AnimalFormPageState extends State<AnimalFormPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
+                        await _saveToStorage();
                         // Navigate to the next page or perform other actions
                         print('Animal Type: $_animalType');
                         print('Dog Size: $_dogSize');

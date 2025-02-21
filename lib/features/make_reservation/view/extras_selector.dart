@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../components/general_dropdown_field.dart';
 import '../components/checkbox_list_item.dart';
@@ -40,6 +41,17 @@ class _ExtrasSelectorState extends State<ExtrasSelector> {
     });
   }
 
+  Future<void> _saveToStorage() async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'Payment Method', value: _selectedPaymentMethod);
+    for (var entry in _selectedOptions.entries) {
+      await storage.write(key: entry.key, value: entry.value.toString());
+    }
+    for (var entry in _answers.entries) {
+      await storage.write(key: entry.key, value: entry.value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -74,41 +86,35 @@ class _ExtrasSelectorState extends State<ExtrasSelector> {
                           onChanged: (bool? value) {
                             setState(() {
                               _selectedOptions[option['name']] = value ?? false;
+                              if (!value!) {
+                                _answers.remove(option['name']);
+                              }
                             });
                           },
                           question: option['question'],
+                          onAnswerChanged: (String? answer) {
+                            setState(() {
+                              _answers[option['name']] = answer;
+                            });
+                          },
                         );
                       }).toList(),
                       const SizedBox(height: 16.0),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
-                              bool allQuestionsAnswered = true;
-                              _selectedOptions.forEach((key, value) {
-                                if (value && _answers[key] == null) {
-                                  allQuestionsAnswered = false;
-                                }
-                              });
-                              if (allQuestionsAnswered) {
-                                context.go(
-                                  '/home/hotelDetails/animalForm/animalFormStageTwo/extrasSelector/summary',
-                                  extra: {
-                                    'Payment Method': _selectedPaymentMethod,
-                                    'Selected Options': _selectedOptions,
-                                    'Answers': _answers,
-                                  },
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Please answer all required questions.'),
-                                  ),
-                                );
-                              }
+                              await _saveToStorage();
+                              context.go(
+                                '/home/hotelDetails/animalForm/animalFormStageTwo/extrasSelector/summary',
+                                extra: {
+                                  'Payment Method': _selectedPaymentMethod,
+                                  'Selected Options': _selectedOptions,
+                                  'Answers': _answers,
+                                },
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(

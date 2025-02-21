@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../components/general_text_field.dart';
 
@@ -35,6 +36,13 @@ class _AnimalFormStageTwoState extends State<AnimalFormStageTwo> {
     }
   }
 
+  Future<void> _saveToStorage() async {
+    final storage = FlutterSecureStorage();
+    for (var entry in _answers.entries) {
+      await storage.write(key: entry.key, value: entry.value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,21 +74,20 @@ class _AnimalFormStageTwoState extends State<AnimalFormStageTwo> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
+                            await _saveToStorage();
                             _answers.forEach((key, value) {
                               print('Question $key: $value');
-                              GoRouter.of(context).go(
-                                  '/home/hotelDetails/animalForm/animalFormStageTwo/extrasSelector');
                             });
+                            GoRouter.of(context).go(
+                                '/home/hotelDetails/animalForm/animalFormStageTwo/extrasSelector');
                           }
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(38.0),
-                          ),
+                          shape: RoundedRectangleBorder(),
                           backgroundColor: Colors.grey[200],
                           foregroundColor: Colors.black,
                         ),
