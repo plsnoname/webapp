@@ -43,12 +43,14 @@ class _ExtrasSelectorState extends State<ExtrasSelector> {
 
   Future<void> _saveToStorage() async {
     final storage = FlutterSecureStorage();
-    await storage.write(key: 'Payment Method', value: _selectedPaymentMethod);
+    await storage.write(
+        key: 'reservation_Payment Method', value: _selectedPaymentMethod);
     for (var entry in _selectedOptions.entries) {
-      await storage.write(key: entry.key, value: entry.value.toString());
+      await storage.write(
+          key: 'reservation_${entry.key}', value: entry.value.toString());
     }
     for (var entry in _answers.entries) {
-      await storage.write(key: entry.key, value: entry.value);
+      await storage.write(key: 'reservation_${entry.key}', value: entry.value);
     }
   }
 

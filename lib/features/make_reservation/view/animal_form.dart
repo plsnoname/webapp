@@ -27,12 +27,12 @@ class _AnimalFormPageState extends State<AnimalFormPage> {
 
   Future<void> _saveToStorage() async {
     final storage = FlutterSecureStorage();
-    await storage.write(key: 'Animal Type', value: _animalType);
-    await storage.write(key: 'Dog Size', value: _dogSize);
-    await storage.write(key: 'Animal Name', value: _animalName);
-    await storage.write(key: 'Other Animal', value: _otherAnimal);
-    await storage.write(key: 'Age', value: _age);
-    await storage.write(key: 'Sex', value: _sex);
+    await storage.write(key: 'reservation_Animal Type', value: _animalType);
+    await storage.write(key: 'reservation_Dog Size', value: _dogSize);
+    await storage.write(key: 'reservation_Animal Name', value: _animalName);
+    await storage.write(key: 'reservation_Other Animal', value: _otherAnimal);
+    await storage.write(key: 'reservation_Age', value: _age);
+    await storage.write(key: 'reservation_Sex', value: _sex);
   }
 
   @override

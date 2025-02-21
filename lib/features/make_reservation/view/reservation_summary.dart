@@ -9,7 +9,24 @@ class ReservationSummary extends StatelessWidget {
 
   Future<Map<String, String>> _loadReservationData() async {
     final storage = FlutterSecureStorage();
-    return await storage.readAll();
+    final allData = await storage.readAll();
+    final filteredData = allData
+      ..removeWhere((key, value) => !_isReservationData(key));
+    return filteredData;
+  }
+
+  bool _isReservationData(String key) {
+    return key.contains('reservation');
+  }
+
+  Future<void> _clearReservationData() async {
+    final storage = FlutterSecureStorage();
+    final allData = await storage.readAll();
+    for (var key in allData.keys) {
+      if (_isReservationData(key)) {
+        await storage.delete(key: key);
+      }
+    }
   }
 
   @override
@@ -58,7 +75,8 @@ class ReservationSummary extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await _clearReservationData();
                         // Perform final submission or navigation
                         print('Final submission');
                       },

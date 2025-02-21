@@ -38,8 +38,12 @@ class _AnimalFormStageTwoState extends State<AnimalFormStageTwo> {
 
   Future<void> _saveToStorage() async {
     final storage = FlutterSecureStorage();
-    for (var entry in _answers.entries) {
-      await storage.write(key: entry.key, value: entry.value);
+    for (var question in _questions) {
+      final questionText = question['question'] ?? '';
+      final answer = _answers[question['id'] ?? ''];
+      if (answer != null) {
+        await storage.write(key: 'reservation_$questionText', value: answer);
+      }
     }
   }
 
