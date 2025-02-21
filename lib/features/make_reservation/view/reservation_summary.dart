@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../components/reservation_summary_item.dart';
 
 class ReservationSummary extends StatelessWidget {
   final Map<String, dynamic> reservationData;
@@ -55,20 +56,9 @@ class ReservationSummary extends StatelessWidget {
                   ),
                   const SizedBox(height: 16.0),
                   ...data.entries.map((entry) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${entry.key}: ',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Expanded(
-                            child: Text(entry.value),
-                          ),
-                        ],
-                      ),
+                    return ReservationSummaryItem(
+                      label: entry.key,
+                      value: entry.value,
                     );
                   }).toList(),
                   const SizedBox(height: 16.0),

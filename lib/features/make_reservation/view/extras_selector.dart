@@ -50,7 +50,10 @@ class _ExtrasSelectorState extends State<ExtrasSelector> {
           key: 'reservation_${entry.key}', value: entry.value.toString());
     }
     for (var entry in _answers.entries) {
-      await storage.write(key: 'reservation_${entry.key}', value: entry.value);
+      final question = _options
+          .firstWhere((option) => option['name'] == entry.key)['question'];
+      await storage.write(
+          key: 'reservation_${entry.key}#$question', value: entry.value);
     }
   }
 
