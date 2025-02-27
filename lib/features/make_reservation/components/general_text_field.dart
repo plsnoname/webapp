@@ -5,6 +5,7 @@ class GeneralTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
+  final String? initialValue;
 
   const GeneralTextField({
     Key? key,
@@ -12,6 +13,7 @@ class GeneralTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.onSaved,
     this.validator,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -54,6 +56,7 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
         SizedBox(height: 8.0),
         TextFormField(
           focusNode: _focusNode,
+          initialValue: widget.initialValue,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[200],

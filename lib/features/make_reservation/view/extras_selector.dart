@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../components/general_dropdown_field.dart';
 import '../components/checkbox_list_item.dart';
+import '../components/storage_helper.dart';
 
 class ExtrasSelector extends StatefulWidget {
   const ExtrasSelector({Key? key}) : super(key: key);
@@ -15,6 +15,7 @@ class ExtrasSelector extends StatefulWidget {
 
 class _ExtrasSelectorState extends State<ExtrasSelector> {
   final _formKey = GlobalKey<FormState>();
+  final StorageHelper _storageHelper = StorageHelper();
   final Map<String, bool> _selectedOptions = {};
   final Map<String, String?> _answers = {};
   String? _selectedPaymentMethod;
@@ -39,21 +40,31 @@ class _ExtrasSelectorState extends State<ExtrasSelector> {
         _selectedOptions[option['name']] = false;
       }
     });
+    await _saveInitialData();
+  }
+
+  Future<void> _saveInitialData() async {
+    await _storageHelper.saveDropdownData(
+        'Payment Method', _paymentMethods, _selectedPaymentMethod ?? '');
+    for (var option in _options) {
+      await _storageHelper.saveKeyWithoutValue(option['name'], 'checkbox');
+      if (option['question'] != null) {
+        await _storageHelper.saveKeyWithoutValue(option['question'], 'text');
+      }
+    }
   }
 
   Future<void> _saveToStorage() async {
-    final storage = FlutterSecureStorage();
-    await storage.write(
-        key: 'reservation_Payment Method', value: _selectedPaymentMethod);
+    await _storageHelper.updateValue(
+        'Payment Method', 'dropdown', _selectedPaymentMethod ?? '');
     for (var entry in _selectedOptions.entries) {
-      await storage.write(
-          key: 'reservation_${entry.key}', value: entry.value.toString());
+      await _storageHelper.updateValue(
+          entry.key, 'checkbox', entry.value.toString());
     }
     for (var entry in _answers.entries) {
       final question = _options
           .firstWhere((option) => option['name'] == entry.key)['question'];
-      await storage.write(
-          key: 'reservation_${entry.key}#$question', value: entry.value);
+      await _storageHelper.updateValue(question, 'text', entry.value ?? '');
     }
   }
 

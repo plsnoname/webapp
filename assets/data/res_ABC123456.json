@@ -1,0 +1,37 @@
+{
+  "reservationCode": "ABC123456",
+  "hotelName": "Luxury Pet Hotel",
+  "location": "123 Pet Street, Petville, PA",
+  "status": "Confirmed",
+  "period": {
+    "checkIn": "2025-06-15",
+    "checkOut": "2025-06-20"
+  },
+  "roomType": "Deluxe Suite",
+  "animal": {
+    "type": "Dog",
+    "name": "Buddy",
+    "sex": "Male"
+  },
+  "questionsAndAnswers": [
+    {
+      "question": "Does your pet have any allergies?",
+      "answer": "No"
+    },
+    {
+      "question": "Is your pet on any medication?",
+      "answer": "Yes, daily vitamins."
+    }
+  ],
+  "extraOptions": [
+    {
+      "option": "Grooming Service",
+      "additionalQuestion": "Preferred style?",
+      "answer": "Short trim"
+    },
+    {
+      "option": "Daily Walks"
+    }
+  ],
+  "paymentMethod": "Credit Card"
+}

@@ -7,7 +7,8 @@ class CheckboxListItem extends StatelessWidget {
   final bool value;
   final ValueChanged<bool?> onChanged;
   final String? question;
-  final ValueChanged<String?>? onAnswerChanged; // Add this line
+  final String? initialAnswer; // Add this line
+  final ValueChanged<String?>? onAnswerChanged;
 
   const CheckboxListItem({
     Key? key,
@@ -16,7 +17,8 @@ class CheckboxListItem extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.question,
-    this.onAnswerChanged, // Add this line
+    this.initialAnswer, // Add this line
+    this.onAnswerChanged,
   }) : super(key: key);
 
   @override
@@ -50,6 +52,7 @@ class CheckboxListItem extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: GeneralTextField(
                 labelText: question!,
+                initialValue: initialAnswer, // Add this line
                 onSaved: (value) {
                   if (onAnswerChanged != null) {
                     onAnswerChanged!(value);

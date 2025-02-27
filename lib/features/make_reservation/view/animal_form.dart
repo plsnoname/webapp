@@ -1,8 +1,8 @@
 import 'package:fatcherappv2/features/authentication/login_guard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../components/general_text_field.dart';
 import '../components/general_dropdown_field.dart';
+import '../components/storage_helper.dart';
 
 class AnimalFormPage extends StatefulWidget {
   final String hotelName;
@@ -18,6 +18,7 @@ class AnimalFormPage extends StatefulWidget {
 
 class _AnimalFormPageState extends State<AnimalFormPage> {
   final _formKey = GlobalKey<FormState>();
+  final StorageHelper _storageHelper = StorageHelper();
   String _animalType = 'Dog';
   String? _dogSize;
   String? _animalName;
@@ -25,14 +26,32 @@ class _AnimalFormPageState extends State<AnimalFormPage> {
   String? _age;
   String? _sex;
 
+  @override
+  void initState() {
+    super.initState();
+    _saveInitialData();
+  }
+
+  Future<void> _saveInitialData() async {
+    await _storageHelper.saveDropdownData(
+        'Animal Type', ['Dog', 'Cat', 'Other'], _animalType);
+    await _storageHelper.saveDropdownData(
+        'Dog Size', ['Small', 'Medium', 'Large'], _dogSize ?? '');
+    await _storageHelper.saveKeyWithoutValue('Animal Name', 'text');
+    await _storageHelper.saveKeyWithoutValue('Other Animal', 'text');
+    await _storageHelper.saveKeyWithoutValue('Age', 'text');
+    await _storageHelper.saveDropdownData(
+        'Sex', ['Male', 'Female'], _sex ?? '');
+  }
+
   Future<void> _saveToStorage() async {
-    final storage = FlutterSecureStorage();
-    await storage.write(key: 'reservation_Animal Type', value: _animalType);
-    await storage.write(key: 'reservation_Dog Size', value: _dogSize);
-    await storage.write(key: 'reservation_Animal Name', value: _animalName);
-    await storage.write(key: 'reservation_Other Animal', value: _otherAnimal);
-    await storage.write(key: 'reservation_Age', value: _age);
-    await storage.write(key: 'reservation_Sex', value: _sex);
+    await _storageHelper.updateValue('Animal Type', 'dropdown', _animalType);
+    await _storageHelper.updateValue('Dog Size', 'dropdown', _dogSize ?? '');
+    await _storageHelper.updateValue('Animal Name', 'text', _animalName ?? '');
+    await _storageHelper.updateValue(
+        'Other Animal', 'text', _otherAnimal ?? '');
+    await _storageHelper.updateValue('Age', 'text', _age ?? '');
+    await _storageHelper.updateValue('Sex', 'dropdown', _sex ?? '');
   }
 
   @override

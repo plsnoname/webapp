@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import '../components/general_text_field.dart';
+import '../components/storage_helper.dart';
 
 class AnimalFormStageTwo extends StatefulWidget {
   const AnimalFormStageTwo({Key? key}) : super(key: key);
@@ -14,6 +14,7 @@ class AnimalFormStageTwo extends StatefulWidget {
 
 class _AnimalFormStageTwoState extends State<AnimalFormStageTwo> {
   final _formKey = GlobalKey<FormState>();
+  final StorageHelper _storageHelper = StorageHelper();
   final Map<String, String?> _answers = {};
   List<Map<String, dynamic>> _questions = [];
 
@@ -31,18 +32,25 @@ class _AnimalFormStageTwoState extends State<AnimalFormStageTwo> {
       setState(() {
         _questions = List<Map<String, dynamic>>.from(data['questions']);
       });
+      await _saveInitialData();
     } catch (e) {
       print('Error loading questions: $e');
     }
   }
 
+  Future<void> _saveInitialData() async {
+    for (var question in _questions) {
+      final questionText = question['question'] ?? '';
+      await _storageHelper.saveKeyWithoutValue(questionText, 'text');
+    }
+  }
+
   Future<void> _saveToStorage() async {
-    final storage = FlutterSecureStorage();
     for (var question in _questions) {
       final questionText = question['question'] ?? '';
       final answer = _answers[question['id'] ?? ''];
       if (answer != null) {
-        await storage.write(key: 'reservation_$questionText', value: answer);
+        await _storageHelper.updateValue(questionText, 'text', answer);
       }
     }
   }

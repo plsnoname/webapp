@@ -1,5 +1,6 @@
 import 'package:fatcherappv2/features/make_reservation/view/animal_form.dart';
 import 'package:fatcherappv2/features/make_reservation/view/animal_form_stage_two.dart';
+import 'package:fatcherappv2/features/make_reservation/view/reservation_form.dart';
 import 'package:fatcherappv2/features/make_reservation/view/reservation_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -52,13 +53,7 @@ final goRouter = GoRouter(
                       builder: (context, state) {
                         final hotelName =
                             state.extra as String? ?? 'Unknown Hotel';
-                        return AnimalFormPage(
-                          hotelName: hotelName,
-                          onNext: () {
-                            GoRouter.of(context).go(
-                                '/home/hotelDetails/animalForm/animalFormStageTwo');
-                          },
-                        );
+                        return DynamicFormScreen(hotelName: hotelName);
                       },
                       routes: [
                         GoRoute(
