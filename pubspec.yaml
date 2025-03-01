@@ -44,3 +44,4 @@ flutter:
     - assets/data/reservations.json
     - assets/data/extra_options.json
     - assets/data/res_form.json
+    - assets/data/reservation_details.json

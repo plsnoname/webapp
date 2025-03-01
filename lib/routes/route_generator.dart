@@ -1,4 +1,3 @@
-import 'package:fatcherappv2/features/make_reservation/view/animal_form.dart';
 import 'package:fatcherappv2/features/make_reservation/view/animal_form_stage_two.dart';
 import 'package:fatcherappv2/features/make_reservation/view/reservation_form.dart';
 import 'package:fatcherappv2/features/make_reservation/view/reservation_summary.dart';
@@ -26,6 +25,9 @@ final goRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
   redirect: (context, state) {
+    if (state.uri.toString() == '/') {
+      return '/home';
+    }
     return null;
   },
   routes: [
@@ -95,8 +97,7 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: 'reservationDetails',
                   builder: (context, state) {
-                    final reservation = state.extra as Map<String, dynamic>;
-                    return ReservationDetailsPage(reservation: reservation);
+                    return ReservationDetailsPage();
                   },
                 ),
               ],
