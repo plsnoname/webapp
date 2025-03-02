@@ -6,6 +6,7 @@ class GeneralTextField extends StatefulWidget {
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
   final String? initialValue;
+  final ValueChanged<String>? onChanged; // Add this line
 
   const GeneralTextField({
     Key? key,
@@ -14,6 +15,7 @@ class GeneralTextField extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.initialValue,
+    this.onChanged, // Add this line
   }) : super(key: key);
 
   @override
@@ -68,6 +70,7 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
           keyboardType: widget.keyboardType,
           onSaved: widget.onSaved,
           validator: widget.validator,
+          onChanged: widget.onChanged, // Add this line
           style: TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,
