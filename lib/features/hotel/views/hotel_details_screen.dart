@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../components/hotel_details_app_bar.dart';
 import '../components/custom_tab_bar.dart';
 import '../components/tab_bar_content.dart';
+import 'package:fatcherappv2/shared/widgets/custom_button.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
 
 class HotelDetailsScreen extends StatefulWidget {
   final Map<String, String>? hotelDetails;
@@ -43,7 +45,7 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                const SizedBox(height: 16),
+                AppSpacing.verticalSpaceMD,
                 CustomTabBar(
                   tabs: _tabs,
                   selectedIndex: _selectedTabIndex,
@@ -77,13 +79,16 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
+              padding: AppSpacing.paddingMD,
+              child: CustomButton(
+                text: 'Make a Reservation',
                 onPressed: () {
-                  context.go('/home/hotelDetails/animalForm',
-                      extra: hotelDetails?['title'] ?? 'Unknown Hotel');
+                  context.go('/home/hotelDetails/roomDetails', extra: {
+                    'imageUrls': [hotelDetails?['imageUrl'] ?? ''],
+                    'roomDescription': 'A beautiful room with all amenities.',
+                    'tags': ['WiFi', 'Air Conditioning', 'Breakfast Included'],
+                  });
                 },
-                child: Text('Make a Reservation'),
               ),
             ),
           ),

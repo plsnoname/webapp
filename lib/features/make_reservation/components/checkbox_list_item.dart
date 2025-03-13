@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'general_text_field.dart';
+import 'package:fatcherappv2/shared/widgets/enhanced_text_field.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
 
 class CheckboxListItem extends StatelessWidget {
   final String title;
@@ -50,17 +51,16 @@ class CheckboxListItem extends StatelessWidget {
           if (value && question != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GeneralTextField(
+              child: EnhancedTextField(
                 labelText: question!,
-                initialValue: initialAnswer, // Add this line
+                initialValue: initialAnswer,
+                style: TextFieldStyle.custom,
                 onSaved: (value) {
                   if (onAnswerChanged != null) {
                     onAnswerChanged!(value);
                   }
                 },
-                validator: (value) => (value == null || value.isEmpty)
-                    ? 'Please answer this question'
-                    : null,
+                onChanged: onAnswerChanged,
               ),
             ),
         ],

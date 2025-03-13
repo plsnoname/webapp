@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:fatcherappv2/features/make_reservation/components/general_text_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/general_dropdown_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/checkbox_list_item.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
 
 class DynamicFormScreen extends StatefulWidget {
   final String hotelName;
@@ -22,6 +23,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
   String? _errorMessage;
   String? selectedType;
   String? selectedBreedSize;
+  String? selectedPaymentMethod;
   int _currentSection = 0;
 
   @override
@@ -95,7 +97,6 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
               });
             },
           ),
-          //just this
           if (formJson!.containsKey('animalQuestions'))
             ...formJson!['animalQuestions'].map<Widget>((question) {
               return GeneralTextField(
@@ -133,6 +134,18 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
         ];
       case 2:
         return [
+          if (formJson!.containsKey('accepted_payment_methods'))
+            GeneralDropdownField<String>(
+              labelText: 'Payment Method',
+              items: formJson!['accepted_payment_methods'].cast<String>(),
+              value: selectedPaymentMethod,
+              onChanged: (value) {
+                setState(() {
+                  selectedPaymentMethod = value;
+                  formData['paymentMethod'] = value;
+                });
+              },
+            ),
           if (formJson!.containsKey('extra_options')) ...[
             Text('Extras:',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
@@ -156,17 +169,12 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
               );
             }).toList(),
           ],
-          if (formJson!.containsKey('paymentOptions'))
-            GeneralDropdownField<String>(
-              labelText: 'Payment Method',
-              items: (formJson!['paymentOptions'] as String).split(', '),
-              value: formData['paymentMethod'],
-              onChanged: (value) {
-                setState(() {
-                  formData['paymentMethod'] = value;
-                });
-              },
-            ),
+        ];
+      case 3:
+        return [
+          ..._buildSection(0),
+          ..._buildSection(1),
+          ..._buildSection(2),
         ];
       default:
         return [];
@@ -207,6 +215,14 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
     return true;
   }
 
+  bool _isSection2Valid() {
+    if (formJson!.containsKey('paymentOptions') &&
+        (selectedPaymentMethod == null || selectedPaymentMethod!.isEmpty)) {
+      return false;
+    }
+    return true;
+  }
+
   void _nextSection() {
     if (_currentSection == 0 && !_isSection0Valid()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -225,21 +241,10 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
   }
 
   void _goToSection(int section) {
-    if (section == 1 && !_isSection0Valid()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please complete all fields in Section 1.')),
-      );
-    } else if (section == 2 && (!_isSection0Valid() || !_isSection1Valid())) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Please complete all fields in Section 1 and 2.')),
-      );
-    } else {
-      _formKey.currentState!.save();
-      setState(() {
-        _currentSection = section;
-      });
-    }
+    _formKey.currentState!.save();
+    setState(() {
+      _currentSection = section;
+    });
   }
 
   void _submitForm() {
@@ -249,7 +254,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
       print('Form Data: $formData');
     } else {
       // Find the first invalid field and navigate to its section
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0; i < 4; i++) {
         setState(() {
           _currentSection = i;
         });
@@ -283,23 +288,74 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Dynamic Form')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () => _goToSection(0),
-                  child: Text('Section 1'),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => _goToSection(0),
+                    child: Text(
+                      'Step 1',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: AppSpacing.paddingVerticalXS
+                          .add(AppSpacing.paddingHorizontalSM),
+                    ),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () => _goToSection(1),
-                  child: Text('Section 2'),
+                SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed:
+                        _isSection0Valid() ? () => _goToSection(1) : null,
+                    child: Text(
+                      'Step 2',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: AppSpacing.paddingVerticalXS
+                          .add(AppSpacing.paddingHorizontalSM),
+                    ),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () => _goToSection(2),
-                  child: Text('Section 3'),
+                SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: (_isSection0Valid() && _isSection1Valid())
+                        ? () => _goToSection(2)
+                        : null,
+                    child: Text(
+                      'Step 3',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: AppSpacing.paddingVerticalXS
+                          .add(AppSpacing.paddingHorizontalSM),
+                    ),
+                  ),
+                ),
+                SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: (_isSection0Valid() &&
+                            _isSection1Valid() &&
+                            _isSection2Valid() &&
+                            selectedPaymentMethod != null)
+                        ? () => _goToSection(3)
+                        : null,
+                    child: Text(
+                      'Summary',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: AppSpacing.paddingVerticalXS
+                          .add(AppSpacing.paddingHorizontalSM),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -342,12 +398,17 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
                         },
                         child: Text('Next Section'),
                       ),
+                    if (_currentSection == 2)
+                      ElevatedButton(
+                        onPressed: _nextSection,
+                        child: Text('Next Section'),
+                      ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            if (_currentSection == 2)
+            SizedBox(height: AppSpacing.md),
+            if (_currentSection == 3)
               ElevatedButton(
                 onPressed: _submitForm,
                 child: Text('Submit'),

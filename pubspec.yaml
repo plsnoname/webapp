@@ -23,12 +23,14 @@ dependencies:
   app_links: ^6.0.0
   flutter_appauth: ^8.0.3
   flutter_inappwebview: ^6.1.5
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  dart_code_metrics: ^4.19.2
 
 flutter:
 
@@ -40,8 +42,6 @@ flutter:
     - assets/images/slide1_hotel.jpeg
     - assets/images/slide2_hotel.jpeg
     - assets/images/slide3_hotel.jpeg
-    - assets/data/questions.json
     - assets/data/reservations.json
-    - assets/data/extra_options.json
     - assets/data/res_form.json
     - assets/data/reservation_details.json

@@ -1,6 +1,4 @@
-import 'package:fatcherappv2/features/make_reservation/view/animal_form_stage_two.dart';
 import 'package:fatcherappv2/features/make_reservation/view/reservation_form.dart';
-import 'package:fatcherappv2/features/make_reservation/view/reservation_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fatcherappv2/features/history/views/history_screen.dart';
@@ -9,8 +7,12 @@ import 'package:fatcherappv2/features/home/views/main_screen.dart';
 import 'package:fatcherappv2/features/profile/views/profile_screen.dart';
 import 'package:fatcherappv2/routes/scaffold_with_nested_navigation.dart';
 import 'package:fatcherappv2/components/in_app_webview.dart';
-import 'package:fatcherappv2/features/history/components/reservation_details_page.dart';
-import 'package:fatcherappv2/features/make_reservation/view/extras_selector.dart';
+import 'package:fatcherappv2/features/history/views/reservation_details_page.dart';
+import 'package:fatcherappv2/features/room_details/view/room_details.dart'; // Add this line
+import 'package:fatcherappv2/features/profile/views/account_settings_page.dart';
+import 'package:fatcherappv2/features/profile/views/privacy_settings_page.dart';
+import 'package:fatcherappv2/features/profile/views/notification_settings_page.dart';
+import 'package:fatcherappv2/features/profile/views/help_support_page.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
@@ -51,35 +53,23 @@ final goRouter = GoRouter(
                   },
                   routes: [
                     GoRoute(
+                      path: 'roomDetails',
+                      builder: (context, state) {
+                        final roomDetails = state.extra as Map<String, dynamic>;
+                        return RoomDetailsPage(
+                          imageUrls: roomDetails['imageUrls'],
+                          roomDescription: roomDetails['roomDescription'],
+                          tags: roomDetails['tags'],
+                        );
+                      },
+                    ),
+                    GoRoute(
                       path: 'animalForm',
                       builder: (context, state) {
                         final hotelName =
                             state.extra as String? ?? 'Unknown Hotel';
                         return DynamicFormScreen(hotelName: hotelName);
                       },
-                      routes: [
-                        GoRoute(
-                          path: 'animalFormStageTwo',
-                          builder: (context, state) => AnimalFormStageTwo(),
-                          routes: [
-                            GoRoute(
-                              path: 'extrasSelector',
-                              builder: (context, state) => ExtrasSelector(),
-                              routes: [
-                                GoRoute(
-                                  path: 'summary',
-                                  builder: (context, state) {
-                                    final reservationData =
-                                        state.extra as Map<String, dynamic>;
-                                    return ReservationSummary(
-                                        reservationData: reservationData);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                   ],
                 ),
@@ -110,6 +100,24 @@ final goRouter = GoRouter(
             GoRoute(
               path: '/settings',
               builder: (context, state) => const ProfileScreen(),
+              routes: [
+                GoRoute(
+                  path: 'accountSettings',
+                  builder: (context, state) => const AccountSettingsPage(),
+                ),
+                GoRoute(
+                  path: 'privacySettings',
+                  builder: (context, state) => const PrivacySettingsPage(),
+                ),
+                GoRoute(
+                  path: 'notificationSettings',
+                  builder: (context, state) => const NotificationSettingsPage(),
+                ),
+                GoRoute(
+                  path: 'helpSupport',
+                  builder: (context, state) => const HelpSupportPage(),
+                ),
+              ],
             ),
           ],
         ),

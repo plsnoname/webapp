@@ -5,10 +5,15 @@ class AppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Hotels',
-      style: TextStyle(
-        fontSize: 35.0,
+    // Minimal font size to save space
+    return Padding(
+      padding: EdgeInsets.only(top: 2.0, bottom: 2.0),
+      child: Text(
+        'Hotels',
+        style: TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

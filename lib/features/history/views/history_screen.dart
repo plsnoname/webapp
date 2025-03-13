@@ -40,57 +40,55 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return LoginGuard(
-      child: SafeArea(
-        child: Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                title: const Text('Reservations'),
-                centerTitle: true,
-                floating: true,
-                snap: true,
-              ),
-              reservations.isEmpty
-                  ? SliverToBoxAdapter(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            'No reservations found',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              title: const Text('Reservations'),
+              centerTitle: true,
+              floating: true,
+              snap: true,
+            ),
+            reservations.isEmpty
+                ? SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'No reservations found',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final reservation = reservations[index];
-
-                          return ReservationItem(
-                            reservationCode:
-                                reservation['reservationCode'] ?? 'N/A',
-                            hotelName: reservation['hotelName'] ?? 'N/A',
-                            animalName: reservation['animalName'] ?? 'N/A',
-                            animalType: reservation['animalType'] ?? 'N/A',
-                            date: reservation['date'] ?? 'N/A',
-                            address: reservation['address'] ?? 'N/A',
-                            status: reservation['status'] ?? 'N/A',
-                            onTap: () {
-                              GoRouter.of(context).push(
-                                '/history/reservationDetails',
-                                extra: reservation,
-                              );
-                            },
-                          );
-                        },
-                        childCount: reservations.length,
-                      ),
                     ),
-            ],
-          ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final reservation = reservations[index];
+
+                        return ReservationItem(
+                          reservationCode:
+                              reservation['reservationCode'] ?? 'N/A',
+                          hotelName: reservation['hotelName'] ?? 'N/A',
+                          animalName: reservation['animalName'] ?? 'N/A',
+                          animalType: reservation['animalType'] ?? 'N/A',
+                          date: reservation['date'] ?? 'N/A',
+                          address: reservation['address'] ?? 'N/A',
+                          status: reservation['status'] ?? 'N/A',
+                          onTap: () {
+                            GoRouter.of(context).push(
+                              '/history/reservationDetails',
+                              extra: reservation,
+                            );
+                          },
+                        );
+                      },
+                      childCount: reservations.length,
+                    ),
+                  ),
+          ],
         ),
       ),
     );

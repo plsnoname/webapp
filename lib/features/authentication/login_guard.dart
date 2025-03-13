@@ -1,7 +1,9 @@
-import 'package:fatcherappv2/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:fatcherappv2/providers/auth.dart';
+import 'package:fatcherappv2/shared/widgets/custom_button.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
 
 class LoginGuard extends StatefulWidget {
   final Widget child;
@@ -61,7 +63,8 @@ class _LoginGuardState extends State<LoginGuard> {
                     title: const Text("Login Required"),
                     content: const Text("Please log in to continue."),
                     actions: [
-                      ElevatedButton(
+                      CustomButton(
+                        text: "Log in",
                         onPressed: () async {
                           final auth =
                               Provider.of<Auth>(context, listen: false);
@@ -70,15 +73,15 @@ class _LoginGuardState extends State<LoginGuard> {
                             _isLoggedInFuture = _checkLoginStatus();
                           });
                         },
-                        child: const Text("Log in"),
                       ),
-                      ElevatedButton(
+                      AppSpacing.horizontalSpaceSM,
+                      CustomButton(
+                        text: "Go Back",
                         onPressed: () {
                           if (GoRouter.of(context).canPop()) {
                             GoRouter.of(context).pop();
                           }
                         },
-                        child: const Text("Close"),
                       ),
                     ],
                   ),

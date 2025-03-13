@@ -6,6 +6,7 @@ import 'package:app_links/app_links.dart';
 import 'routes/route_generator.dart';
 import 'providers/auth.dart';
 import 'components/auto_login_checker.dart';
+import 'design_system/index.dart';
 
 final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 final ValueNotifier<bool> isLoggedIn = ValueNotifier<bool>(false);
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
       child: AutoLoginChecker(
         child: MaterialApp.router(
           title: 'Booking App',
+          theme: AppTheme.lightTheme,
           routerDelegate: goRouter.routerDelegate,
           routeInformationParser: goRouter.routeInformationParser,
           routeInformationProvider: goRouter.routeInformationProvider,

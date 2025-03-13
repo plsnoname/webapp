@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fatcherappv2/shared/widgets/enhanced_text_field.dart';
+import 'package:fatcherappv2/shared/widgets/custom_button.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
+import 'package:fatcherappv2/design_system/typography.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final Function(String) onSearch;
@@ -7,71 +11,68 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final verticalGap = 4.0;
+
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            onChanged: onSearch,
-            decoration: InputDecoration(
-              hintText: 'Where to?',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
+          Theme(
+            data: Theme.of(context).copyWith(
+              inputDecorationTheme: InputDecorationTheme(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                isDense: true,
               ),
-              filled: true,
-              fillColor: Colors.grey[200],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                EnhancedTextField(
+                  labelText: 'Where to?',
+                  onChanged: onSearch,
+                  style: TextFieldStyle.material,
+                  borderRadius: BorderRadius.circular(6),
+                  fillColor: Colors.grey[200],
+                ),
+                SizedBox(height: verticalGap),
+                EnhancedTextField(
+                  labelText: 'What date?',
+                  style: TextFieldStyle.material,
+                  borderRadius: BorderRadius.circular(6),
+                  fillColor: Colors.grey[200],
+                ),
+                SizedBox(height: verticalGap),
+                EnhancedTextField(
+                  labelText: 'Animals',
+                  style: TextFieldStyle.material,
+                  borderRadius: BorderRadius.circular(6),
+                  fillColor: Colors.grey[200],
+                ),
+                SizedBox(height: verticalGap),
+              ],
             ),
           ),
-          const SizedBox(height: 12),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'What date?',
-              prefixIcon: const Icon(Icons.calendar_today),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'How many animals?',
-              prefixIcon: const Icon(Icons.pets),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {}, // Add additional actions for search if needed
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              minimumSize: const Size(double.infinity, 50),
-            ),
-            child: const Text('Search'),
+          CustomButton(
+            text: 'Search',
+            onPressed: () {},
+            width: double.infinity,
+            height: 38,
+            borderRadius: 6,
           ),
         ],
       ),

@@ -83,7 +83,16 @@ class RoomTile extends StatelessWidget {
                 CustomButton(
                   text: 'Schedule',
                   onPressed: () {
-                    GoRouter.of(context).go('/home/hotelDetails/animalForm');
+                    GoRouter.of(context)
+                        .go('/home/hotelDetails/roomDetails', extra: {
+                      'imageUrls': [room['imageUrl'] ?? ''],
+                      'roomDescription': room['description'] ?? '',
+                      'tags': [
+                        'WiFi',
+                        'Air Conditioning',
+                        'Breakfast Included'
+                      ],
+                    });
                   },
                   backgroundColor: Colors.purple,
                   textColor: Colors.white,

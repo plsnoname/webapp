@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../shared/widgets/custom_list_item/custom_list_item.dart';
+import 'package:fatcherappv2/shared/widgets/custom_hotel_card.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
 
 class HotelList extends StatelessWidget {
   final List<Map<String, String>> items;
@@ -9,18 +10,25 @@ class HotelList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine responsive padding based on screen width
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth < 360 ? 8.0 : AppSpacing.md;
+    final verticalPadding = screenWidth < 360 ? 6.0 : AppSpacing.sm;
+
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
           final item = items[index];
           return Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: verticalPadding,
+            ),
             child: GestureDetector(
               onTap: () {
-                context.go('/hotel/hotelDetails', extra: item);
+                context.go('/home/hotelDetails', extra: item);
               },
-              child: CustomListItem(
+              child: CustomHotelCard(
                 title: item['title'] ?? 'Unknown Title',
                 location: item['location'] ?? 'Unknown Location',
                 price: item['price'] ?? 'Unknown Price',

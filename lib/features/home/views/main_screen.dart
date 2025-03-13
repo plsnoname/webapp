@@ -2,6 +2,8 @@ import 'package:fatcherappv2/features/home/components/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import '../components/app_bar_title.dart';
 import '../components/hotel_list.dart';
+import 'package:fatcherappv2/design_system/spacing.dart';
+import 'package:fatcherappv2/design_system/typography.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -48,26 +50,29 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 380.0,
-              pinned: false,
-              backgroundColor: Colors.white,
-              automaticallyImplyLeading: false,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      const AppBarTitle(),
-                      CustomSearchBar(onSearch: filterByQuery),
-                    ],
-                  ),
-                ),
+        child: Column(
+          children: [
+            // Fixed header with title and search form (reduced padding)
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const AppBarTitle(),
+                  SizedBox(height: 4), // Reduced spacing
+                  CustomSearchBar(onSearch: filterByQuery),
+                ],
               ),
             ),
-            HotelList(items: filteredItems),
+            // Scrollable hotel list
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  HotelList(items: filteredItems),
+                ],
+              ),
+            ),
           ],
         ),
       ),
