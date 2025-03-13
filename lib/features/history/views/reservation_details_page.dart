@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fatcherappv2/shared/widgets/custom_button.dart';
-import 'package:fatcherappv2/design_system/spacing.dart';
-import 'package:fatcherappv2/design_system/typography.dart';
 
 class ReservationDetailsPage extends StatefulWidget {
   const ReservationDetailsPage({Key? key}) : super(key: key);

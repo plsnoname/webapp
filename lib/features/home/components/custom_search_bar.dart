@@ -9,7 +9,8 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+//    gonna use this later
+//    final screenWidth = MediaQuery.of(context).size.width;
     final verticalGap = 4.0;
 
     return Container(
