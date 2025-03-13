@@ -45,3 +45,5 @@ flutter:
     - assets/data/reservations.json
     - assets/data/res_form.json
     - assets/data/reservation_details.json
+    - assets/data/chats_list.json
+    - assets/data/chat01.json

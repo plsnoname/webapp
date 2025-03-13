@@ -8,11 +8,13 @@ import 'package:fatcherappv2/features/profile/views/profile_screen.dart';
 import 'package:fatcherappv2/routes/scaffold_with_nested_navigation.dart';
 import 'package:fatcherappv2/components/in_app_webview.dart';
 import 'package:fatcherappv2/features/history/views/reservation_details_page.dart';
-import 'package:fatcherappv2/features/room_details/view/room_details.dart'; // Add this line
+import 'package:fatcherappv2/features/room_details/view/room_details.dart';
 import 'package:fatcherappv2/features/profile/views/account_settings_page.dart';
 import 'package:fatcherappv2/features/profile/views/privacy_settings_page.dart';
 import 'package:fatcherappv2/features/profile/views/notification_settings_page.dart';
 import 'package:fatcherappv2/features/profile/views/help_support_page.dart';
+import 'package:fatcherappv2/features/messaging/views/chat_list_screen.dart';
+import 'package:fatcherappv2/features/messaging/views/chat_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
@@ -116,6 +118,19 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: 'helpSupport',
                   builder: (context, state) => const HelpSupportPage(),
+                ),
+                GoRoute(
+                  path: 'messages',
+                  builder: (context, state) => ChatListScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'chat',
+                      builder: (context, state) {
+                        final chatId = state.extra as String;
+                        return ChatScreen(chatId: chatId);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

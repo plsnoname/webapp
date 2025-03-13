@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fatcherappv2/shared/widgets/enhanced_text_field.dart';
 import 'package:fatcherappv2/shared/widgets/custom_button.dart';
-import 'package:fatcherappv2/design_system/spacing.dart';
-import 'package:fatcherappv2/design_system/typography.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final Function(String) onSearch;

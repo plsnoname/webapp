@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fatcherappv2/shared/widgets/image_section.dart';
 import 'package:fatcherappv2/shared/widgets/title_section.dart';
-import 'package:fatcherappv2/shared/widgets/info_section.dart';
-import 'package:fatcherappv2/design_system/spacing.dart';
 
 class CustomHotelCard extends StatelessWidget {
   final String title;

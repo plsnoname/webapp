@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fatcherappv2/shared/widgets/enhanced_text_field.dart';
-import 'package:fatcherappv2/design_system/spacing.dart';
 
 class CheckboxListItem extends StatelessWidget {
   final String title;

@@ -54,6 +54,13 @@ class ProfileScreen extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.message),
+            title: const Text('Messages'),
+            onTap: () {
+              GoRouter.of(context).push('/settings/messages');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {

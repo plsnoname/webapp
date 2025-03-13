@@ -2,8 +2,6 @@ import 'package:fatcherappv2/features/home/components/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import '../components/app_bar_title.dart';
 import '../components/hotel_list.dart';
-import 'package:fatcherappv2/design_system/spacing.dart';
-import 'package:fatcherappv2/design_system/typography.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
