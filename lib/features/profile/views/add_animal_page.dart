@@ -3,6 +3,7 @@ import 'package:fatcherappv2/design_system/typography.dart';
 import 'package:fatcherappv2/design_system/spacing.dart';
 import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/general_dropdown_field.dart';
+import 'package:fatcherappv2/shared/utils/form_validators.dart';
 
 class AddAnimalPage extends StatefulWidget {
   final Function(Map<String, dynamic>) onAddAnimal;
@@ -51,12 +52,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
                 onSaved: (value) {
                   _animalData['type'] = value!;
                 },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a type';
-                  }
-                  return null;
-                },
+                validator: FormValidators.required,
               ),
               AppSpacing.verticalSpaceMD,
               UnifiedTextField(
@@ -65,12 +61,7 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
                 onSaved: (value) {
                   _animalData['name'] = value!;
                 },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
+                validator: FormValidators.required,
               ),
               AppSpacing.verticalSpaceMD,
               UnifiedTextField(

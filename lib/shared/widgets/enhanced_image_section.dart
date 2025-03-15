@@ -1,100 +1,73 @@
 import 'package:flutter/material.dart';
+import 'base_image.dart';
 
 /**
  * EnhancedImageSection - Unified image carousel/display component
  * 
- * This component replaces both:
- * - shared/widgets/image_section.dart
- * - features/hotel/components/image_section.dart
- * 
- * New features:
- * - Full screen view on tap
- * - Optional indicators
- * - Custom padding
- * - Custom tap handling
- * - Better loading states
+ * This component extends BaseImageWidget to reduce code duplication
  */
 
-class EnhancedImageSection extends StatefulWidget {
-  final List<String> imageUrls;
-  final double height;
-  final double? width;
-  final BorderRadius? borderRadius;
-  final BoxFit fit;
-  final String fallbackAssetPath;
+class EnhancedImageSection extends BaseImageWidget {
   final bool showIndicator;
   final EdgeInsets? padding;
-  final bool fullScreenOnTap;
-  final VoidCallback? onTap;
 
   const EnhancedImageSection({
     Key? key,
-    required this.imageUrls,
-    this.height = 250,
-    this.width,
-    this.borderRadius,
-    this.fit = BoxFit.cover,
-    this.fallbackAssetPath = 'assets/images/hotel_dummy_photo.jpeg',
+    required List<String> imageUrls,
+    double height = 250,
+    double? width,
+    BorderRadius? borderRadius,
+    BoxFit fit = BoxFit.cover,
+    String fallbackAssetPath = 'assets/images/hotel_dummy_photo.jpeg',
     this.showIndicator = true,
     this.padding,
-    this.fullScreenOnTap = false,
-    this.onTap,
-  }) : super(key: key);
-
-  @override
-  _EnhancedImageSectionState createState() => _EnhancedImageSectionState();
-}
-
-class _EnhancedImageSectionState extends State<EnhancedImageSection> {
-  int _currentIndex = 0;
+    bool fullScreenOnTap = false,
+    VoidCallback? onTap,
+  }) : super(
+          key: key,
+          imageUrls: imageUrls,
+          height: height,
+          width: width,
+          borderRadius: borderRadius,
+          fit: fit,
+          fallbackAssetPath: fallbackAssetPath,
+          fullScreenOnTap: fullScreenOnTap,
+          onTap: onTap,
+        );
 
   @override
   Widget build(BuildContext context) {
     // If only one image or empty list (use fallback), show simple image
-    if (widget.imageUrls.isEmpty || widget.imageUrls.length <= 1) {
+    if (imageUrls.isEmpty || imageUrls.length <= 1) {
       return _buildSingleImage(
-          widget.imageUrls.isNotEmpty ? widget.imageUrls[0] : "");
+          context, imageUrls.isNotEmpty ? imageUrls[0] : "");
     }
 
     // If multiple images, show carousel
-    return _buildImageCarousel();
+    return _buildImageCarousel(context);
   }
 
-  Widget _buildSingleImage(String imageUrl) {
+  Widget _buildSingleImage(BuildContext context, String imageUrl) {
     Widget imageWidget = ClipRRect(
-      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+      borderRadius: borderRadius ?? BorderRadius.circular(12),
       child: Image.network(
         imageUrl,
-        height: widget.height,
-        width: widget.width ?? double.infinity,
-        fit: widget.fit,
+        height: height,
+        width: width ?? double.infinity,
+        fit: fit,
         errorBuilder: (context, error, stackTrace) {
-          return _buildFallbackImage();
+          return buildFallbackImage();
         },
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return _buildLoadingIndicator();
+          return buildLoadingIndicator(context);
         },
       ),
     );
 
-    if (widget.fullScreenOnTap || widget.onTap != null) {
+    if (fullScreenOnTap || onTap != null) {
       return GestureDetector(
-        onTap: widget.onTap ??
-            () {
-              if (widget.fullScreenOnTap) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => _FullScreenImage(
-                      imageUrl: imageUrl,
-                      fallbackAssetPath: widget.fallbackAssetPath,
-                      fit: widget.fit,
-                    ),
-                  ),
-                );
-              }
-            },
+        onTap: () => handleImageTap(context, imageUrl),
         child: imageWidget,
       );
     }
@@ -102,158 +75,76 @@ class _EnhancedImageSectionState extends State<EnhancedImageSection> {
     return imageWidget;
   }
 
-  Widget _buildImageCarousel() {
-    Widget carousel = Stack(
-      alignment: Alignment.center,
-      children: [
-        // Slideshow using PageView
-        Container(
-          height: widget.height,
-          width: widget.width ?? double.infinity,
-          padding: widget.padding,
-          child: PageView.builder(
-            itemCount: widget.imageUrls.length,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: widget.onTap ??
-                    () {
-                      if (widget.fullScreenOnTap) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => _FullScreenImage(
-                              imageUrl: widget.imageUrls[index],
-                              fallbackAssetPath: widget.fallbackAssetPath,
-                              fit: widget.fit,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                child: ClipRRect(
-                  borderRadius:
-                      widget.borderRadius ?? BorderRadius.circular(12),
-                  child: Image.network(
-                    widget.imageUrls[index],
-                    fit: widget.fit,
-                    height: widget.height,
-                    width: widget.width ?? double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildFallbackImage();
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return _buildLoadingIndicator();
-                    },
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        // Dots Indicator for Slideshow
-        if (widget.showIndicator && widget.imageUrls.length > 1)
-          Positioned(
-            bottom: 16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                widget.imageUrls.length,
-                (index) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentIndex == index ? 10 : 8,
-                  height: _currentIndex == index ? 10 : 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == index
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.5),
+  Widget _buildImageCarousel(BuildContext context) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        int currentIndex = 0;
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Slideshow using PageView
+            Container(
+              height: height,
+              width: width ?? double.infinity,
+              padding: padding,
+              child: PageView.builder(
+                itemCount: imageUrls.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => handleImageTap(context, imageUrls[index]),
+                    child: ClipRRect(
+                      borderRadius: borderRadius ?? BorderRadius.circular(12),
+                      child: Image.network(
+                        imageUrls[index],
+                        fit: fit,
+                        height: height,
+                        width: width ?? double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return buildFallbackImage();
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return buildLoadingIndicator(context);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Dots Indicator for Slideshow
+            if (showIndicator && imageUrls.length > 1)
+              Positioned(
+                bottom: 16,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    imageUrls.length,
+                    (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: currentIndex == index ? 10 : 8,
+                      height: currentIndex == index ? 10 : 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: currentIndex == index
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-      ],
-    );
-
-    return carousel;
-  }
-
-  Widget _buildFallbackImage() {
-    return ClipRRect(
-      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-      child: Image.asset(
-        widget.fallbackAssetPath,
-        height: widget.height,
-        width: widget.width ?? double.infinity,
-        fit: widget.fit,
-      ),
-    );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return Container(
-      height: widget.height,
-      width: widget.width ?? double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[800]
-            : Colors.grey[200],
-        borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-      ),
-      child: Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(
-            Theme.of(context).colorScheme.secondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FullScreenImage extends StatelessWidget {
-  final String imageUrl;
-  final String fallbackAssetPath;
-  final BoxFit fit;
-
-  const _FullScreenImage({
-    Key? key,
-    required this.imageUrl,
-    required this.fallbackAssetPath,
-    this.fit = BoxFit.contain,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-      body: Center(
-        child: InteractiveViewer(
-          minScale: 0.5,
-          maxScale: 3.0,
-          child: Image.network(
-            imageUrl,
-            fit: fit,
-            errorBuilder: (context, error, stackTrace) {
-              return Image.asset(
-                fallbackAssetPath,
-                fit: fit,
-              );
-            },
-          ),
-        ),
-      ),
+          ],
+        );
+      },
     );
   }
 }

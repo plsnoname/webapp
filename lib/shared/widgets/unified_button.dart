@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/button_styles.dart';
 
 enum UnifiedButtonStyle {
   filled,
@@ -102,55 +103,50 @@ class UnifiedButton extends StatelessWidget {
     }
 
     Widget buttonWidget;
+    final buttonContent = buildButtonContent();
 
+    // Use ButtonStyleHelper to generate consistent styles
     switch (buttonStyle) {
       case UnifiedButtonStyle.filled:
         buttonWidget = ElevatedButton(
           onPressed: enabled ? onPressed : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: enabled ? effectiveBgColor : disabledBg,
-            foregroundColor: effectiveTextColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-              side: borderSide ?? BorderSide.none,
-            ),
-            padding: padding ??
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          style: ButtonStyleHelper.filledStyle(
+            backgroundColor: effectiveBgColor,
+            textColor: effectiveTextColor,
+            borderRadius: borderRadius,
+            padding: padding,
+            disabledColor: disabledBg,
+            borderSide: borderSide,
             elevation: elevation,
           ),
-          child: buildButtonContent(),
+          child: buttonContent,
         );
         break;
 
       case UnifiedButtonStyle.outlined:
         buttonWidget = OutlinedButton(
           onPressed: enabled ? onPressed : null,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: enabled ? effectiveBgColor : disabledBg,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            side: borderSide ??
-                BorderSide(color: enabled ? effectiveBgColor : disabledBg),
-            padding: padding ??
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          style: ButtonStyleHelper.outlinedStyle(
+            color: effectiveBgColor,
+            borderRadius: borderRadius,
+            padding: padding,
+            disabledColor: disabledBg,
+            borderSide: borderSide,
           ),
-          child: buildButtonContent(),
+          child: buttonContent,
         );
         break;
 
       case UnifiedButtonStyle.text:
         buttonWidget = TextButton(
           onPressed: enabled ? onPressed : null,
-          style: TextButton.styleFrom(
-            foregroundColor: enabled ? effectiveBgColor : disabledBg,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            padding: padding ??
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          style: ButtonStyleHelper.textStyle(
+            color: effectiveBgColor,
+            borderRadius: borderRadius,
+            padding: padding,
+            disabledColor: disabledBg,
           ),
-          child: buildButtonContent(),
+          child: buttonContent,
         );
         break;
     }

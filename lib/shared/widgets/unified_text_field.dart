@@ -137,21 +137,14 @@ class _UnifiedTextFieldState extends State<UnifiedTextField> {
 
   @override
   Widget build(BuildContext context) {
-    switch (widget.style) {
-      case TextFieldStyle.material:
-        return _buildMaterialTextField();
-      case TextFieldStyle.compact:
-        return _buildCompactTextField();
-      case TextFieldStyle.general:
-        return _buildGeneralTextField();
-      case TextFieldStyle.custom:
-      default:
-        return _buildCustomTextField();
-    }
-  }
+    final bool hasLabel = widget.style != TextFieldStyle.material;
+    final Color fieldBackground = widget.fillColor ?? Colors.grey[200]!;
+    final BorderRadius borderRadius = widget.borderRadius ??
+        BorderRadius.circular(
+            widget.style == TextFieldStyle.material ? 8.0 : 38.0);
 
-  Widget _buildMaterialTextField() {
-    return TextFormField(
+    // Common text form field configuration
+    Widget textField = TextFormField(
       controller: widget.controller,
       initialValue: widget.initialValue,
       keyboardType: widget.keyboardType,
@@ -161,159 +154,61 @@ class _UnifiedTextFieldState extends State<UnifiedTextField> {
       validator: widget.validator,
       onChanged: widget.onChanged,
       maxLines: widget.maxLines,
-      style: widget.textStyle ?? const TextStyle(fontSize: 14.0),
+      style: widget.textStyle ??
+          TextStyle(
+            fontSize: widget.style == TextFieldStyle.compact ? 14.0 : 16.0,
+            fontWeight: widget.style == TextFieldStyle.custom
+                ? FontWeight.bold
+                : FontWeight.normal,
+          ),
       decoration: InputDecoration(
-        labelText: widget.labelText + (widget.required ? ' *' : ''),
+        labelText: widget.style == TextFieldStyle.material
+            ? widget.labelText + (widget.required ? ' *' : '')
+            : null,
         hintText: widget.hintText,
         contentPadding: widget.contentPadding ??
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        isDense: true, // Makes the field height smaller
+            EdgeInsets.symmetric(
+              horizontal: widget.style == TextFieldStyle.material ? 10.0 : 12.0,
+              vertical: widget.style == TextFieldStyle.material ? 8.0 : 12.0,
+            ),
+        isDense: widget.style == TextFieldStyle.material ||
+            widget.style == TextFieldStyle.compact,
         border: OutlineInputBorder(
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
-          borderSide: const BorderSide(width: 1),
+          borderRadius: borderRadius,
+          borderSide: widget.style == TextFieldStyle.custom
+              ? BorderSide.none
+              : BorderSide(width: 1),
         ),
-        filled: widget.fillColor != null,
-        fillColor: widget.fillColor,
+        filled: true,
+        fillColor: fieldBackground,
       ),
     );
-  }
 
-  Widget _buildCompactTextField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          widget.labelText + (widget.required ? ' *' : ''),
-          style: widget.labelStyle ??
-              TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w500,
-                color: _isFocused ? Colors.blue : Colors.black87,
-              ),
-        ),
-        const SizedBox(height: 4.0),
-        TextFormField(
-          controller: widget.controller,
-          initialValue: widget.initialValue,
-          keyboardType: widget.keyboardType,
-          obscureText: widget.obscureText,
-          focusNode: _focusNode,
-          onSaved: widget.onSaved,
-          validator: widget.validator,
-          onChanged: widget.onChanged,
-          maxLines: widget.maxLines,
-          style: widget.textStyle ?? const TextStyle(fontSize: 14.0),
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            contentPadding: widget.contentPadding ??
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            border: OutlineInputBorder(
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
-              borderSide: const BorderSide(color: Colors.grey),
+    // For styles that need a label above the field
+    if (hasLabel) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.style != TextFieldStyle.material)
+            Text(
+              widget.labelText + (widget.required ? ' *' : ''),
+              style: widget.labelStyle ??
+                  TextStyle(
+                    fontSize:
+                        widget.style == TextFieldStyle.compact ? 12.0 : 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: _isFocused ? Colors.blue : Colors.black,
+                  ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
-              borderSide: const BorderSide(color: Colors.grey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
-              borderSide: const BorderSide(color: Colors.blue),
-            ),
-            filled: widget.fillColor != null,
-            fillColor: widget.fillColor,
-          ),
-        ),
-      ],
-    );
-  }
+          if (widget.style != TextFieldStyle.material)
+            SizedBox(
+                height: widget.style == TextFieldStyle.compact ? 4.0 : 8.0),
+          textField,
+        ],
+      );
+    }
 
-  Widget _buildCustomTextField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.labelText + (widget.required ? ' *' : ''),
-          style: widget.labelStyle ??
-              TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: _isFocused ? Colors.blue : Colors.black,
-              ),
-        ),
-        const SizedBox(height: 8.0),
-        TextFormField(
-          controller: widget.controller,
-          initialValue: widget.initialValue,
-          keyboardType: widget.keyboardType,
-          obscureText: widget.obscureText,
-          focusNode: _focusNode,
-          onSaved: widget.onSaved,
-          validator: widget.validator,
-          onChanged: widget.onChanged,
-          maxLines: widget.maxLines,
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            filled: true,
-            fillColor: widget.fillColor ?? Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(38.0),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: widget.contentPadding,
-          ),
-          style: widget.textStyle ??
-              const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGeneralTextField() {
-    // This mimics the GeneralTextField component style
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.labelText,
-          style: widget.labelStyle ??
-              TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: _isFocused ? Colors.blue : Colors.black,
-              ),
-        ),
-        SizedBox(height: 8.0),
-        TextFormField(
-          controller: widget.controller,
-          initialValue: widget.initialValue,
-          focusNode: _focusNode,
-          keyboardType: widget.keyboardType,
-          obscureText: widget.obscureText,
-          onSaved: widget.onSaved,
-          validator: widget.validator,
-          onChanged: widget.onChanged,
-          maxLines: widget.maxLines,
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            filled: true,
-            fillColor: widget.fillColor ?? Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(38.0),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: widget.contentPadding,
-          ),
-          style: widget.textStyle ??
-              TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-      ],
-    );
+    return textField;
   }
 }
