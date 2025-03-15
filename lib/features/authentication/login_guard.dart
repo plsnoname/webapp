@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fatcherappv2/providers/auth.dart';
-import 'package:fatcherappv2/shared/widgets/custom_button.dart';
+import 'package:fatcherappv2/shared/widgets/unified_button.dart'; // Updated import
 import 'package:fatcherappv2/design_system/spacing.dart';
 
 class LoginGuard extends StatefulWidget {
@@ -63,8 +63,10 @@ class _LoginGuardState extends State<LoginGuard> {
                     title: const Text("Login Required"),
                     content: const Text("Please log in to continue."),
                     actions: [
-                      CustomButton(
+                      UnifiedButton(
+                        // Replaced CustomButton with UnifiedButton
                         text: "Log in",
+                        buttonStyle: UnifiedButtonStyle.filled,
                         onPressed: () async {
                           final auth =
                               Provider.of<Auth>(context, listen: false);
@@ -75,8 +77,10 @@ class _LoginGuardState extends State<LoginGuard> {
                         },
                       ),
                       AppSpacing.horizontalSpaceSM,
-                      CustomButton(
+                      UnifiedButton(
+                        // Replaced CustomButton with UnifiedButton
                         text: "Go Back",
+                        buttonStyle: UnifiedButtonStyle.filled,
                         onPressed: () {
                           if (GoRouter.of(context).canPop()) {
                             GoRouter.of(context).pop();

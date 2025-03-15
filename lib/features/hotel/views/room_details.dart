@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../components/image_section.dart'; // Import the ImageSection component
+import 'package:fatcherappv2/shared/widgets/enhanced_image_section.dart'; // Updated import
 
 class RoomDetailsPage extends StatelessWidget {
   final List<String> imageUrls;
@@ -24,7 +24,11 @@ class RoomDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ImageSection(imageUrls: imageUrls), // Use ImageSection here
+            EnhancedImageSection(
+              imageUrls: imageUrls,
+              fullScreenOnTap: true, // Add this enhancement
+              borderRadius: BorderRadius.circular(12),
+            ),
             SizedBox(height: 16.0),
             Text(
               'Description',

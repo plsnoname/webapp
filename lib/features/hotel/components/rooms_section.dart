@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'custom_button.dart';
+import 'package:fatcherappv2/shared/widgets/enhanced_image_section.dart';
+import 'package:fatcherappv2/shared/widgets/unified_button.dart'; // Updated import
 
 class RoomsSection extends StatelessWidget {
   final List<Map<String, String>> rooms;
@@ -35,77 +36,93 @@ class RoomTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String imageUrl = room['imageUrl'] ?? '';
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    room['name'] ?? 'Room Name',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    room['description'] ?? 'Room description',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
+      child: Column(
+        children: [
+          // Add image preview if available
+          if (imageUrl.isNotEmpty)
+            EnhancedImageSection(
+              imageUrls: [imageUrl],
+              height: 120,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              showIndicator: false,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  room['price'] ?? '\$0/day',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        room['name'] ?? 'Room Name',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        room['description'] ?? 'Room description',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                CustomButton(
-                  text: 'Schedule',
-                  onPressed: () {
-                    GoRouter.of(context)
-                        .go('/home/hotelDetails/roomDetails', extra: {
-                      'imageUrls': [room['imageUrl'] ?? ''],
-                      'roomDescription': room['description'] ?? '',
-                      'tags': [
-                        'WiFi',
-                        'Air Conditioning',
-                        'Breakfast Included'
-                      ],
-                    });
-                  },
-                  backgroundColor: Colors.purple,
-                  textColor: Colors.white,
-                  borderRadius: 20,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 24,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      room['price'] ?? '\$0/day',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    UnifiedButton(
+                      text: 'Schedule',
+                      onPressed: () {
+                        GoRouter.of(context)
+                            .go('/home/hotelDetails/roomDetails', extra: {
+                          'imageUrls': [room['imageUrl'] ?? ''],
+                          'roomDescription': room['description'] ?? '',
+                          'tags': [
+                            'WiFi',
+                            'Air Conditioning',
+                            'Breakfast Included'
+                          ],
+                        });
+                      },
+                      backgroundColor: Colors.purple,
+                      textColor: Colors.white,
+                      borderRadius: 20,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 24,
+                      ),
+                      buttonStyle:
+                          UnifiedButtonStyle.filled, // Updated enum reference
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
-import 'package:fatcherappv2/shared/widgets/custom_button.dart';
+import 'package:fatcherappv2/shared/widgets/unified_button.dart'; // Changed import
 
 class CustomSearchBar extends StatelessWidget {
   final Function(String) onSearch;
@@ -64,12 +64,13 @@ class CustomSearchBar extends StatelessWidget {
               ],
             ),
           ),
-          CustomButton(
+          UnifiedButton(
             text: 'Search',
             onPressed: () {},
             width: double.infinity,
             height: 38,
             borderRadius: 6,
+            buttonStyle: UnifiedButtonStyle.filled, // Updated enum reference
           ),
         ],
       ),

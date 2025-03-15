@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'image_section.dart';
+import 'package:fatcherappv2/shared/widgets/enhanced_image_section.dart'; // Updated import
 import 'info_section.dart';
 import 'title_section.dart';
 
@@ -19,8 +19,12 @@ class HotelDetailsAppBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ImageSection(
+              child: EnhancedImageSection(
                 imageUrls: hotelDetails['imageUrls'] ?? [''],
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
               ),
             ),
             Padding(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fatcherappv2/shared/widgets/image_section.dart';
+import 'package:fatcherappv2/shared/widgets/enhanced_image_section.dart'; // Updated import
 import 'package:fatcherappv2/shared/widgets/title_section.dart';
 
 class CustomHotelCard extends StatelessWidget {
@@ -37,7 +37,7 @@ class CustomHotelCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image Section
+          // Image Section - Updated to use EnhancedImageSection
           ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(12),
@@ -46,7 +46,16 @@ class CustomHotelCard extends StatelessWidget {
             child: SizedBox(
               width: imageWidth,
               height: imageHeight,
-              child: ImageSection(imageUrls: [imageUrl]),
+              child: EnhancedImageSection(
+                imageUrls: [imageUrl],
+                height: imageHeight,
+                width: imageWidth,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
+                ),
+                showIndicator: false, // Only one image, no need for indicators
+              ),
             ),
           ),
 

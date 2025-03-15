@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../components/hotel_details_app_bar.dart';
 import '../components/custom_tab_bar.dart';
 import '../components/tab_bar_content.dart';
-import 'package:fatcherappv2/shared/widgets/custom_button.dart';
+import 'package:fatcherappv2/shared/widgets/unified_button.dart'; // Updated import
 import 'package:fatcherappv2/design_system/spacing.dart';
 
 class HotelDetailsScreen extends StatefulWidget {
@@ -80,7 +80,8 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: AppSpacing.paddingMD,
-              child: CustomButton(
+              child: UnifiedButton(
+                // Replaced CustomButton with UnifiedButton
                 text: 'Make a Reservation',
                 onPressed: () {
                   context.go('/home/hotelDetails/roomDetails', extra: {
@@ -89,6 +90,8 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                     'tags': ['WiFi', 'Air Conditioning', 'Breakfast Included'],
                   });
                 },
+                buttonStyle:
+                    UnifiedButtonStyle.filled, // Updated enum reference
               ),
             ),
           ),

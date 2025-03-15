@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../shared/widgets/image_section.dart'; // Updated import path
+import '../../../shared/widgets/enhanced_image_section.dart'; // Updated import
 import '../../../design_system/spacing.dart'; // Import spacing
-import '../../../shared/widgets/custom_button.dart'; // Import shared button
+import '../../../shared/widgets/unified_button.dart'; // Updated import
 
 class RoomDetailsPage extends StatelessWidget {
   final List<String> imageUrls;
@@ -26,7 +26,11 @@ class RoomDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ImageSection(imageUrls: imageUrls), // Using shared ImageSection
+            EnhancedImageSection(
+              imageUrls: imageUrls,
+              fullScreenOnTap: true,
+              borderRadius: BorderRadius.circular(12),
+            ),
             AppSpacing.verticalSpaceMD, // Using design system spacing
             Text(
               'Description',
@@ -50,8 +54,7 @@ class RoomDetailsPage extends StatelessWidget {
             ),
             AppSpacing.verticalSpaceMD, // Using design system spacing
             Center(
-              child: CustomButton(
-                // Using shared button component
+              child: UnifiedButton(
                 text: 'Proceed to Reservation',
                 onPressed: () {
                   context.go('/home/hotelDetails/animalForm',
@@ -59,6 +62,8 @@ class RoomDetailsPage extends StatelessWidget {
                 },
                 backgroundColor: Theme.of(context).primaryColor,
                 width: 250,
+                buttonStyle:
+                    UnifiedButtonStyle.filled, // Updated enum reference
               ),
             ),
           ],
