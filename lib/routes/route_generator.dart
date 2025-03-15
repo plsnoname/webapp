@@ -15,6 +15,7 @@ import 'package:fatcherappv2/features/profile/views/notification_settings_page.d
 import 'package:fatcherappv2/features/profile/views/help_support_page.dart';
 import 'package:fatcherappv2/features/messaging/views/chat_list_screen.dart';
 import 'package:fatcherappv2/features/messaging/views/chat_screen.dart';
+import 'package:fatcherappv2/features/profile/views/add_animal_page.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
@@ -114,6 +115,16 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: 'accountSettings',
                   builder: (context, state) => const AccountSettingsPage(),
+                  routes: [
+                    GoRoute(
+                      path: 'addAnimal',
+                      builder: (context, state) {
+                        final onAddAnimal =
+                            state.extra as Function(Map<String, dynamic>);
+                        return AddAnimalPage(onAddAnimal: onAddAnimal);
+                      },
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'privacySettings',

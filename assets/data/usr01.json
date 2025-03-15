@@ -1,0 +1,35 @@
+{
+  "firstName": "John",
+  "name": "Smith",
+  "phoneNumber": "555-123-4567",
+  "location": "San Francisco",
+  "animals": [
+    {
+      "type": "dog",
+      "name": "Rex",
+      "breed": "labrador",
+      "sex": "male",
+      "age": 3,
+      "size": "M",
+      "neuter": "yes"
+    },
+    {
+      "type": "cat",
+      "name": "Whiskers",
+      "breed": "stray",
+      "sex": "female",
+      "age": 2,
+      "size": "S",
+      "neuter": "no"
+    },
+    {
+      "type": "other",
+      "name": "Bugs",
+      "breed": "rabbit",
+      "sex": "male",
+      "age": 1,
+      "size": "S",
+      "neuter": "no"
+    }
+  ]
+}
