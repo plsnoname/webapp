@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:fatcherappv2/features/make_reservation/components/general_text_field.dart';
+import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/general_dropdown_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/checkbox_list_item.dart';
 import 'package:fatcherappv2/design_system/spacing.dart';
@@ -65,9 +65,10 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
               },
             ),
           if (selectedType == 'Other')
-            GeneralTextField(
+            UnifiedTextField(
               labelText: 'What type of animal',
               initialValue: formData['otherType'],
+              style: TextFieldStyle.general,
               onChanged: (value) {
                 setState(() {
                   formData['otherType'] = value;
@@ -99,9 +100,10 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
           ),
           if (formJson!.containsKey('animalQuestions'))
             ...formJson!['animalQuestions'].map<Widget>((question) {
-              return GeneralTextField(
+              return UnifiedTextField(
                 labelText: question,
                 initialValue: formData[question],
+                style: TextFieldStyle.general,
                 onChanged: (value) {
                   setState(() {
                     formData[question] = value;
@@ -119,10 +121,11 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
         return [
           if (formJson!.containsKey('hotelQuestions'))
             ...formJson!['hotelQuestions'].map<Widget>((question) {
-              return GeneralTextField(
-                key: ValueKey(question), // Add this line
+              return UnifiedTextField(
+                key: ValueKey(question),
                 labelText: question,
                 initialValue: formData[question],
+                style: TextFieldStyle.general,
                 onChanged: (value) {
                   setState(() {
                     formData[question] = value;

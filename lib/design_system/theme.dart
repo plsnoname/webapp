@@ -102,6 +102,7 @@ class AppTheme {
         contentPadding: AppSpacing.paddingMD,
         hintStyle: TextStyle(color: AppColors.textHint),
         labelStyle: TextStyle(color: AppColors.textSecondary),
+        // This theme will be used by default for UnifiedTextField.material style
       ),
 
       chipTheme: ChipThemeData(

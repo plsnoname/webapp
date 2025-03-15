@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fatcherappv2/shared/widgets/enhanced_text_field.dart';
+import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
 import 'package:fatcherappv2/shared/widgets/custom_button.dart';
 
 class CustomSearchBar extends StatelessWidget {
@@ -9,8 +9,6 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    gonna use this later
-//    final screenWidth = MediaQuery.of(context).size.width;
     final verticalGap = 4.0;
 
     return Container(
@@ -41,7 +39,7 @@ class CustomSearchBar extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                EnhancedTextField(
+                UnifiedTextField(
                   labelText: 'Where to?',
                   onChanged: onSearch,
                   style: TextFieldStyle.material,
@@ -49,14 +47,14 @@ class CustomSearchBar extends StatelessWidget {
                   fillColor: Colors.grey[200],
                 ),
                 SizedBox(height: verticalGap),
-                EnhancedTextField(
+                UnifiedTextField(
                   labelText: 'What date?',
                   style: TextFieldStyle.material,
                   borderRadius: BorderRadius.circular(6),
                   fillColor: Colors.grey[200],
                 ),
                 SizedBox(height: verticalGap),
-                EnhancedTextField(
+                UnifiedTextField(
                   labelText: 'Animals',
                   style: TextFieldStyle.material,
                   borderRadius: BorderRadius.circular(6),

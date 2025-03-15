@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../../../design_system/index.dart';
 import '../models/message.dart';
 import '../widgets/message_item.dart';
+import '../../../shared/widgets/unified_text_field.dart'; // Add import for UnifiedTextField
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
@@ -74,14 +75,13 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: UnifiedTextField(
+                    // Replace TextField with UnifiedTextField
                     controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: 'Type a message',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                    labelText: '',
+                    hintText: 'Type a message',
+                    style: TextFieldStyle.material,
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 IconButton(

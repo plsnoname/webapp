@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'unified_text_field.dart';
 
 class EditableInfoItem extends StatefulWidget {
   final String fieldName;
@@ -43,11 +44,12 @@ class _EditableInfoItemState extends State<EditableInfoItem> {
               Text(widget.fieldName,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               _isEditing
-                  ? TextField(
+                  ? UnifiedTextField(
                       controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: 'Enter ${widget.fieldName}',
-                      ),
+                      labelText:
+                          '', // Empty label since we already have the field name above
+                      hintText: 'Enter ${widget.fieldName}',
+                      style: TextFieldStyle.material,
                     )
                   : Text(widget.fieldValue, style: TextStyle(fontSize: 16)),
             ],

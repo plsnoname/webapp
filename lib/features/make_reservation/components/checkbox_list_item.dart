@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fatcherappv2/shared/widgets/enhanced_text_field.dart';
+import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
 
 class CheckboxListItem extends StatelessWidget {
   final String title;
@@ -7,7 +7,7 @@ class CheckboxListItem extends StatelessWidget {
   final bool value;
   final ValueChanged<bool?> onChanged;
   final String? question;
-  final String? initialAnswer; // Add this line
+  final String? initialAnswer;
   final ValueChanged<String?>? onAnswerChanged;
 
   const CheckboxListItem({
@@ -17,7 +17,7 @@ class CheckboxListItem extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.question,
-    this.initialAnswer, // Add this line
+    this.initialAnswer,
     this.onAnswerChanged,
   }) : super(key: key);
 
@@ -50,7 +50,7 @@ class CheckboxListItem extends StatelessWidget {
           if (value && question != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: EnhancedTextField(
+              child: UnifiedTextField(
                 labelText: question!,
                 initialValue: initialAnswer,
                 style: TextFieldStyle.custom,

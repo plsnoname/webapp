@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fatcherappv2/design_system/typography.dart';
 import 'package:fatcherappv2/design_system/spacing.dart';
-import 'package:fatcherappv2/features/make_reservation/components/general_text_field.dart';
+import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/general_dropdown_field.dart';
 
 class AddAnimalPage extends StatefulWidget {
@@ -45,8 +45,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
           key: _formKey,
           child: ListView(
             children: [
-              GeneralTextField(
+              UnifiedTextField(
                 labelText: 'Type',
+                style: TextFieldStyle.general,
                 onSaved: (value) {
                   _animalData['type'] = value!;
                 },
@@ -58,8 +59,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
                 },
               ),
               AppSpacing.verticalSpaceMD,
-              GeneralTextField(
+              UnifiedTextField(
                 labelText: 'Name',
+                style: TextFieldStyle.general,
                 onSaved: (value) {
                   _animalData['name'] = value!;
                 },
@@ -71,8 +73,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
                 },
               ),
               AppSpacing.verticalSpaceMD,
-              GeneralTextField(
+              UnifiedTextField(
                 labelText: 'Breed',
+                style: TextFieldStyle.general,
                 onSaved: (value) {
                   _animalData['breed'] = value!;
                 },
@@ -98,8 +101,9 @@ class _AddAnimalPageState extends State<AddAnimalPage> {
                 },
               ),
               AppSpacing.verticalSpaceMD,
-              GeneralTextField(
+              UnifiedTextField(
                 labelText: 'Age',
+                style: TextFieldStyle.general,
                 onSaved: (value) {
                   _animalData['age'] = value!;
                 },
