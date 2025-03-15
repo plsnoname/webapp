@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fatcherappv2/design_system/index.dart';
 
 class CustomTabBar extends StatelessWidget {
   final List<String> tabs;
@@ -15,24 +16,24 @@ class CustomTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: AppSpacing.paddingHorizontalMD,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(tabs.length, (index) {
+          final isSelected = selectedIndex == index;
           return GestureDetector(
             onTap: () => onTabSelected(index),
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md + 4, vertical: AppSpacing.sm),
               decoration: BoxDecoration(
-                color: selectedIndex == index ? Colors.blue : Colors.grey[300],
+                color: isSelected ? AppColors.primary : AppColors.surface,
                 borderRadius: BorderRadius.circular(15.0),
               ),
               child: Text(
                 tabs[index],
-                style: TextStyle(
-                  color: selectedIndex == index ? Colors.white : Colors.black,
-                  fontSize: 14,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: isSelected ? Colors.white : AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

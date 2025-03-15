@@ -48,3 +48,4 @@ flutter:
     - assets/data/chats_list.json
     - assets/data/chat01.json
     - assets/data/usr01.json
+    - assets/data/reviews01.json

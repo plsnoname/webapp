@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../components/hotel_details_app_bar.dart';
 import '../components/custom_tab_bar.dart';
 import '../components/tab_bar_content.dart';
-import 'package:fatcherappv2/shared/widgets/unified_button.dart'; // Updated import
+import 'package:fatcherappv2/shared/widgets/unified_button.dart';
 import 'package:fatcherappv2/design_system/spacing.dart';
 
 class HotelDetailsScreen extends StatefulWidget {
@@ -28,6 +28,8 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final hotelDetails = widget.hotelDetails;
+    final bool showReservationButton =
+        _selectedTabIndex != 2; // Hide on Reviews tab
 
     return Scaffold(
       body: CustomScrollView(
@@ -77,24 +79,28 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: AppSpacing.paddingMD,
-              child: UnifiedButton(
-                // Replaced CustomButton with UnifiedButton
-                text: 'Make a Reservation',
-                onPressed: () {
-                  context.go('/home/hotelDetails/roomDetails', extra: {
-                    'imageUrls': [hotelDetails?['imageUrl'] ?? ''],
-                    'roomDescription': 'A beautiful room with all amenities.',
-                    'tags': ['WiFi', 'Air Conditioning', 'Breakfast Included'],
-                  });
-                },
-                buttonStyle:
-                    UnifiedButtonStyle.filled, // Updated enum reference
+          // Conditionally show the reservation button
+          if (showReservationButton)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: AppSpacing.paddingMD,
+                child: UnifiedButton(
+                  text: 'Make a Reservation',
+                  onPressed: () {
+                    context.go('/home/hotelDetails/roomDetails', extra: {
+                      'imageUrls': [hotelDetails?['imageUrl'] ?? ''],
+                      'roomDescription': 'A beautiful room with all amenities.',
+                      'tags': [
+                        'WiFi',
+                        'Air Conditioning',
+                        'Breakfast Included'
+                      ],
+                    });
+                  },
+                  buttonStyle: UnifiedButtonStyle.filled,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

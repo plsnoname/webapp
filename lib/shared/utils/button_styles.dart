@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fatcherappv2/design_system/colors.dart';
 
 /// Helper class to generate consistent button styles across the app
 class ButtonStyleHelper {
