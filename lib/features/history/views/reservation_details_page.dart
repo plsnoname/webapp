@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:fatcherappv2/shared/widgets/unified_info_section.dart';
 
 class ReservationDetailsPage extends StatefulWidget {
   const ReservationDetailsPage({Key? key}) : super(key: key);
@@ -55,25 +56,80 @@ class _ReservationDetailsPageState extends State<ReservationDetailsPage> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Text('Hotel: ${reservation!['hotel_name']}'),
-            Text(
-                'Animal: ${reservation!['animal']['name']} (${reservation!['animal']['type']})'),
-            Text('Breed: ${reservation!['animal']['breed']}'),
-            Text('Age: ${reservation!['animal']['age']}'),
-            Text('Date: ${reservation!['date']}'),
-            Text('Address: ${reservation!['address']}'),
-            const SizedBox(height: 4.0),
-            Text('Status: ${reservation!['status']}',
-                style: const TextStyle(color: Colors.redAccent)),
+            UnifiedInfoSection(
+              direction: Axis.vertical,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              itemPadding: EdgeInsets.symmetric(vertical: 4.0),
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              infoItems: [
+                InfoItemData(
+                  label: 'Hotel',
+                  value: reservation!['hotel_name'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Animal',
+                  value:
+                      '${reservation!['animal']['name']} (${reservation!['animal']['type']})',
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Breed',
+                  value: reservation!['animal']['breed'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Age',
+                  value: reservation!['animal']['age'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Date',
+                  value: reservation!['date'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Address',
+                  value: reservation!['address'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Status',
+                  value: reservation!['status'],
+                  valueStyle: TextStyle(color: Colors.redAccent),
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+              ],
+            ),
             const SizedBox(height: 16.0),
             const Text(
               'Health Information',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('Allergies: ${reservation!['health_info']['allergies']}'),
-            Text('Medications: ${reservation!['health_info']['medications']}'),
-            Text(
-                'Feeding Schedule: ${reservation!['health_info']['feeding_schedule']}'),
+            UnifiedInfoSection(
+              direction: Axis.vertical,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              itemPadding: EdgeInsets.symmetric(vertical: 4.0),
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              infoItems: [
+                InfoItemData(
+                  label: 'Allergies',
+                  value: reservation!['health_info']['allergies'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Medications',
+                  value: reservation!['health_info']['medications'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+                InfoItemData(
+                  label: 'Feeding Schedule',
+                  value: reservation!['health_info']['feeding_schedule'],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
+              ],
+            ),
             const SizedBox(height: 16.0),
             const Text(
               'Questions',
