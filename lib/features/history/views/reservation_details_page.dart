@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class ReservationDetailsPage extends StatefulWidget {
   const ReservationDetailsPage({Key? key}) : super(key: key);
@@ -33,7 +34,7 @@ class _ReservationDetailsPageState extends State<ReservationDetailsPage> {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
-    } // djsasn
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -106,7 +107,10 @@ class _ReservationDetailsPageState extends State<ReservationDetailsPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          GoRouter.of(context)
+              .push('/history/reservationDetails/chat', extra: 'chat01');
+        },
         child: const Icon(Icons.message_outlined),
         backgroundColor: Theme.of(context).primaryColor,
       ),

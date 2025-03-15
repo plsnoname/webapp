@@ -91,6 +91,14 @@ final goRouter = GoRouter(
                   builder: (context, state) {
                     return ReservationDetailsPage();
                   },
+                  routes: [
+                    GoRoute(
+                        path: 'chat',
+                        builder: (context, state) {
+                          final chatId = state.extra as String;
+                          return ChatScreen(chatId: chatId);
+                        }),
+                  ],
                 ),
               ],
             ),
