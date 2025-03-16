@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:provider/provider.dart';
+import 'package:fatcherappv2/providers/user_profile_provider.dart';
 import 'package:fatcherappv2/shared/widgets/unified_text_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/general_dropdown_field.dart';
 import 'package:fatcherappv2/features/make_reservation/components/checkbox_list_item.dart';
 import 'package:fatcherappv2/design_system/spacing.dart';
+import 'package:fatcherappv2/shared/widgets/collapsible_animal_item.dart';
 
 class DynamicFormScreen extends StatefulWidget {
   final String hotelName;
@@ -26,10 +29,16 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
   String? selectedPaymentMethod;
   int _currentSection = 0;
 
+  // Pet selection related variables
+  List<Map<String, dynamic>> _userPets = [];
+  Map<String, dynamic>? _selectedPet;
+  bool _isManualEntryExpanded = true;
+
   @override
   void initState() {
     super.initState();
     _loadJsonData();
+    _loadUserPets();
   }
 
   Future<void> _loadJsonData() async {
@@ -48,76 +57,224 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
     }
   }
 
+  Future<void> _loadUserPets() async {
+    try {
+      // Try loading from UserProfileProvider first
+      final userProfileProvider =
+          Provider.of<UserProfileProvider>(context, listen: false);
+
+      if (!userProfileProvider.isLoading &&
+          userProfileProvider.userData != null) {
+        if (userProfileProvider.userData!.containsKey('animals')) {
+          setState(() {
+            _userPets = List<Map<String, dynamic>>.from(
+                userProfileProvider.userData!['animals']);
+          });
+          return;
+        }
+      }
+
+      // Fallback to loading directly from file
+      final String response =
+          await rootBundle.loadString('assets/data/usr01.json');
+      final data = json.decode(response);
+
+      setState(() {
+        _userPets = List<Map<String, dynamic>>.from(data['animals']);
+      });
+    } catch (e) {
+      print('Error loading user pets: $e');
+    }
+  }
+
+  void _selectPet(Map<String, dynamic> pet) {
+    setState(() {
+      if (_selectedPet == pet) {
+        // Deselect if the same pet is clicked again
+        _selectedPet = null;
+        _isManualEntryExpanded = true;
+      } else {
+        _selectedPet = pet;
+        _isManualEntryExpanded = false;
+
+        // Fill in form data from the selected pet
+        formData['type'] = pet['type'];
+        selectedType = pet['type'];
+
+        if (pet['type'].toString().toLowerCase() == 'dog') {
+          formData['breedSize'] = pet['size'];
+          selectedBreedSize = pet['size'];
+        }
+
+        formData['gender'] = pet['sex'];
+        formData['name'] = pet['name'];
+        formData['breed'] = pet['breed'];
+        formData['age'] = pet['age'].toString();
+
+        // Additional pet information if available
+        if (pet.containsKey('neuter')) {
+          formData['neuter'] = pet['neuter'];
+        }
+      }
+    });
+  }
+
   List<Widget> _buildSection(int section) {
     switch (section) {
       case 0:
         return [
-          if (formJson!.containsKey('type'))
-            GeneralDropdownField<String>(
-              labelText: 'Type',
-              items: (formJson!['type'] as String).split(', '),
-              value: selectedType,
-              onChanged: (value) {
+          // Pet selection section
+          if (_userPets.isNotEmpty) ...[
+            Card(
+              margin: EdgeInsets.symmetric(vertical: AppSpacing.md),
+              elevation: 2,
+              child: ExpansionTile(
+                initiallyExpanded: true,
+                title: Text(
+                  'Select one of your pets',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(AppSpacing.sm),
+                    child: Column(
+                      children: _userPets.map((pet) {
+                        final bool isSelected = _selectedPet == pet;
+                        return Stack(
+                          children: [
+                            CollapsibleAnimalItem(animal: pet),
+                            Positioned(
+                              right: 10,
+                              top: 10,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isSelected
+                                      ? Colors.green.withOpacity(0.2)
+                                      : Colors.transparent,
+                                ),
+                                child: Checkbox(
+                                  value: isSelected,
+                                  onChanged: (_) => _selectPet(pet),
+                                  shape: CircleBorder(),
+                                  activeColor: Colors.green,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: AppSpacing.md),
+          ],
+
+          // Manual pet entry form (collapsible)
+          Card(
+            margin: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            elevation: 2,
+            child: ExpansionTile(
+              initiallyExpanded: _isManualEntryExpanded,
+              title: Text(
+                'Enter new pet information',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onExpansionChanged: (expanded) {
                 setState(() {
-                  selectedType = value;
-                  formData['type'] = value;
+                  _isManualEntryExpanded = expanded;
+                  if (expanded) {
+                    _selectedPet = null;
+                  }
                 });
               },
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    children: [
+                      if (formJson!.containsKey('type'))
+                        GeneralDropdownField<String>(
+                          labelText: 'Type',
+                          items: (formJson!['type'] as String).split(', '),
+                          value: selectedType,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedType = value;
+                              formData['type'] = value;
+                            });
+                          },
+                        ),
+                      if (selectedType == 'Other')
+                        UnifiedTextField(
+                          labelText: 'What type of animal',
+                          initialValue: formData['otherType'],
+                          style: TextFieldStyle.general,
+                          onChanged: (value) {
+                            setState(() {
+                              formData['otherType'] = value;
+                            });
+                          },
+                          onSaved: (value) => formData['otherType'] = value,
+                        ),
+                      if (selectedType == 'Dog')
+                        GeneralDropdownField<String>(
+                          labelText: 'Breed Size',
+                          items: ['Small', 'Medium', 'Large'],
+                          value: selectedBreedSize,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedBreedSize = value;
+                              formData['breedSize'] = value;
+                            });
+                          },
+                        ),
+                      GeneralDropdownField<String>(
+                        labelText: 'Gender',
+                        items: ['Male', 'Female'],
+                        value: formData['gender'],
+                        onChanged: (value) {
+                          setState(() {
+                            formData['gender'] = value;
+                          });
+                        },
+                      ),
+                      if (formJson!.containsKey('animalQuestions'))
+                        ...formJson!['animalQuestions'].map<Widget>((question) {
+                          return UnifiedTextField(
+                            labelText: question,
+                            initialValue: formData[question],
+                            style: TextFieldStyle.general,
+                            onChanged: (value) {
+                              setState(() {
+                                formData[question] = value;
+                              });
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                formData[question] = value;
+                              });
+                            },
+                          );
+                        }).toList(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          if (selectedType == 'Other')
-            UnifiedTextField(
-              labelText: 'What type of animal',
-              initialValue: formData['otherType'],
-              style: TextFieldStyle.general,
-              onChanged: (value) {
-                setState(() {
-                  formData['otherType'] = value;
-                });
-              },
-              onSaved: (value) => formData['otherType'] = value,
-            ),
-          if (selectedType == 'Dog')
-            GeneralDropdownField<String>(
-              labelText: 'Breed Size',
-              items: ['Small', 'Medium', 'Large'],
-              value: selectedBreedSize,
-              onChanged: (value) {
-                setState(() {
-                  selectedBreedSize = value;
-                  formData['breedSize'] = value;
-                });
-              },
-            ),
-          GeneralDropdownField<String>(
-            labelText: 'Gender',
-            items: ['Male', 'Female'],
-            value: formData['gender'],
-            onChanged: (value) {
-              setState(() {
-                formData['gender'] = value;
-              });
-            },
           ),
-          if (formJson!.containsKey('animalQuestions'))
-            ...formJson!['animalQuestions'].map<Widget>((question) {
-              return UnifiedTextField(
-                labelText: question,
-                initialValue: formData[question],
-                style: TextFieldStyle.general,
-                onChanged: (value) {
-                  setState(() {
-                    formData[question] = value;
-                  });
-                },
-                onSaved: (value) {
-                  setState(() {
-                    formData[question] = value;
-                  });
-                },
-              );
-            }).toList(),
         ];
+
       case 1:
+        // ...existing code...
         return [
           if (formJson!.containsKey('hotelQuestions'))
             ...formJson!['hotelQuestions'].map<Widget>((question) {
@@ -135,7 +292,9 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
               );
             }).toList(),
         ];
+
       case 2:
+        // ...existing code...
         return [
           if (formJson!.containsKey('accepted_payment_methods'))
             GeneralDropdownField<String>(
@@ -173,18 +332,143 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
             }).toList(),
           ],
         ];
+
       case 3:
+        // Summary view
         return [
-          ..._buildSection(0),
-          ..._buildSection(1),
-          ..._buildSection(2),
+          // Pet information section
+          Card(
+            margin: EdgeInsets.symmetric(vertical: AppSpacing.md),
+            elevation: 2,
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Pet Information',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: AppSpacing.md),
+
+                  // Show selected pet card or manual entry data
+                  if (_selectedPet != null)
+                    CollapsibleAnimalItem(animal: _selectedPet!)
+                  else
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Type: ${formData['type'] ?? 'Not specified'}'),
+                        if (formData['type'] == 'Other')
+                          Text('Specific type: ${formData['otherType'] ?? ''}'),
+                        if (formData['type'] == 'Dog')
+                          Text('Breed size: ${formData['breedSize'] ?? ''}'),
+                        Text(
+                            'Gender: ${formData['gender'] ?? 'Not specified'}'),
+                        // Display animal questions answers
+                        if (formJson != null &&
+                            formJson!.containsKey('animalQuestions'))
+                          ...formJson!['animalQuestions'].map((question) => Text(
+                              '$question: ${formData[question] ?? 'Not answered'}')),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+          ),
+
+          // Show rest of the summary sections (hotel questions, payment, etc.)
+          Card(
+            margin: EdgeInsets.symmetric(vertical: AppSpacing.md),
+            elevation: 2,
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hotel Information',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  if (formJson != null &&
+                      formJson!.containsKey('hotelQuestions'))
+                    ...formJson!['hotelQuestions'].map((question) => Text(
+                        '$question: ${formData[question] ?? 'Not answered'}')),
+                ],
+              ),
+            ),
+          ),
+
+          // Payment section
+          Card(
+            margin: EdgeInsets.symmetric(vertical: AppSpacing.md),
+            elevation: 2,
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Payment & Extras',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  Text(
+                      'Payment Method: ${formData['paymentMethod'] ?? 'Not selected'}'),
+                  SizedBox(height: AppSpacing.sm),
+
+                  // Show selected extras
+                  if (formJson != null &&
+                      formJson!.containsKey('extra_options')) ...[
+                    Text('Selected Extras:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    ...formJson!['extra_options'].map((option) {
+                      final bool isSelected = formData[option['name']] == true;
+                      if (!isSelected) return SizedBox.shrink();
+
+                      return Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('✓ ${option['name']} (\$${option['price']})'),
+                            if (option['question'] != null &&
+                                formData['${option['name']}_response'] != null)
+                              Padding(
+                                padding: EdgeInsets.only(left: 16.0),
+                                child: Text(
+                                  '${option['question']}: ${formData['${option['name']}_response']}',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ],
+              ),
+            ),
+          ),
         ];
+
       default:
         return [];
     }
   }
 
   bool _isCurrentSectionValid() {
+    // ...existing code...
     final currentFormState = _formKey.currentState;
     if (currentFormState != null) {
       return currentFormState.validate();
@@ -193,6 +477,10 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
   }
 
   bool _isSection0Valid() {
+    // If a pet is selected, this section is valid
+    if (_selectedPet != null) return true;
+
+    // Otherwise, check the manual entry form
     if (selectedType == null || selectedType!.isEmpty) return false;
     if (selectedType == 'Dog' &&
         (selectedBreedSize == null || selectedBreedSize!.isEmpty)) return false;
@@ -208,6 +496,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
     return true;
   }
 
+  // ...existing code...
   bool _isSection1Valid() {
     if (formJson!.containsKey('hotelQuestions')) {
       for (var question in formJson!['hotelQuestions']) {
@@ -270,6 +559,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ...existing code...
     if (_isLoading) {
       return Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -371,50 +661,45 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
                 child: ListView(
                   children: [
                     ..._buildSection(_currentSection),
-                    if (_currentSection == 0)
+                    SizedBox(height: AppSpacing.md),
+                    if (_currentSection < 3)
                       ElevatedButton(
                         onPressed: () {
-                          if (_isSection0Valid()) {
-                            _nextSection();
-                          } else {
+                          if (_currentSection == 0 && !_isSection0Valid()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                  content: Text(
-                                      'Please complete all fields in this section.')),
+                                content: Text(
+                                    'Please either select a pet or fill in all required fields.'),
+                              ),
                             );
-                          }
-                        },
-                        child: Text('Next Section'),
-                      ),
-                    if (_currentSection == 1)
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_isSection1Valid()) {
-                            _nextSection();
-                          } else {
+                          } else if (_currentSection == 1 &&
+                              !_isSection1Valid()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                  content: Text(
-                                      'Please complete all fields in this section.')),
+                                content: Text(
+                                    'Please complete all fields in this section.'),
+                              ),
                             );
+                          } else {
+                            _nextSection();
                           }
                         },
-                        child: Text('Next Section'),
-                      ),
-                    if (_currentSection == 2)
-                      ElevatedButton(
-                        onPressed: _nextSection,
-                        child: Text('Next Section'),
+                        child: Text('Next'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50),
+                        ),
                       ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: AppSpacing.md),
             if (_currentSection == 3)
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text('Submit'),
+                child: Text('Submit Reservation'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                ),
               ),
           ],
         ),

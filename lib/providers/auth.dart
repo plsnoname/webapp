@@ -189,6 +189,7 @@ class Auth with ChangeNotifier {
         );
         _isLoggedIn = true;
         notifyListeners();
+        debugPrint('Access Token refreshed: ${data['access_token']}');
       } else {
         debugPrint('Token refresh failed: ${response.body}');
       }
