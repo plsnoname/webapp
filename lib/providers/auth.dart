@@ -15,6 +15,31 @@ class Auth with ChangeNotifier {
       'com.example.fatcherappv2://dev-fetcher.eu.auth0.com/android/com.example.fatcherappv2/logout';
 
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  bool _isLoggedIn = false;
+
+  Auth() {
+    // Check login status on initialization
+    _checkLoginStatus();
+  }
+
+  // Public getter to access login state
+  Future<bool> get isLoggedIn async {
+    await _checkLoginStatus();
+    return _isLoggedIn;
+  }
+
+  // Check if user is logged in by looking for an access token
+  Future<void> _checkLoginStatus() async {
+    final String? accessToken = await secureStorage.read(key: 'accessToken');
+    final bool wasLoggedIn = _isLoggedIn;
+    _isLoggedIn = accessToken != null;
+
+    // Only notify if state actually changed
+    if (wasLoggedIn != _isLoggedIn) {
+      debugPrint('🔐 Auth: Login state changed to: $_isLoggedIn');
+      notifyListeners();
+    }
+  }
 
   Future<void> login(BuildContext context) async {
     try {
@@ -75,6 +100,7 @@ class Auth with ChangeNotifier {
 
           debugPrint('Access Token: ${data['access_token']}');
           debugPrint('Refresh Token: ${data['refresh_token']}');
+          _isLoggedIn = true;
           notifyListeners();
         } else {
           debugPrint('Token exchange failed: ${response.body}');
@@ -123,6 +149,7 @@ class Auth with ChangeNotifier {
                   (data['expires_in'] * 1000))
               .toString(),
         );
+        _isLoggedIn = true;
         notifyListeners();
       } else {
         debugPrint('Token exchange failed: ${response.body}');
@@ -160,6 +187,7 @@ class Auth with ChangeNotifier {
                   (data['expires_in'] * 1000))
               .toString(),
         );
+        _isLoggedIn = true;
         notifyListeners();
       } else {
         debugPrint('Token refresh failed: ${response.body}');
@@ -177,18 +205,12 @@ class Auth with ChangeNotifier {
         'returnTo': logoutUri,
       });
       await context.push<String>('/in-app-webview', extra: url.toString());
+      _isLoggedIn = false;
       notifyListeners();
     } catch (e) {
       debugPrint('Logout error: $e');
       rethrow;
     }
-  }
-
-  Future<bool> get isLoggedIn async {
-    final token = await secureStorage.read(key: 'accessToken');
-    final expiresAt = await secureStorage.read(key: 'expiresAt');
-    if (token == null || expiresAt == null) return false;
-    return DateTime.now().millisecondsSinceEpoch < int.parse(expiresAt);
   }
 
   String _generateCodeVerifier() {

@@ -5,6 +5,7 @@ class ReviewDialog extends StatefulWidget {
   final Function(int rating, String review) onSubmit;
   final String? initialReview;
   final int? initialRating;
+  final String? reservationId;
 
   const ReviewDialog({
     Key? key,
@@ -12,6 +13,7 @@ class ReviewDialog extends StatefulWidget {
     required this.onSubmit,
     this.initialReview,
     this.initialRating,
+    this.reservationId,
   }) : super(key: key);
 
   /// Shows the review dialog and returns the result when submitted
@@ -21,6 +23,7 @@ class ReviewDialog extends StatefulWidget {
     required String title,
     String? initialReview,
     int? initialRating,
+    String? reservationId,
   }) async {
     return showDialog<Map<String, dynamic>>(
       context: context,
@@ -33,10 +36,13 @@ class ReviewDialog extends StatefulWidget {
             title: title,
             initialReview: initialReview,
             initialRating: initialRating,
+            reservationId: reservationId,
             onSubmit: (rating, review) {
               Navigator.of(context).pop({
                 'rating': rating,
                 'review': review,
+                'reservationId': reservationId,
+                'submitted': true,
               });
             },
           ),

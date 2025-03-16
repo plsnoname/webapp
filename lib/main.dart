@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:app_links/app_links.dart';
 import 'routes/route_generator.dart';
 import 'providers/auth.dart';
+import 'providers/user_profile_provider.dart';
 import 'components/auto_login_checker.dart';
+import 'components/pending_review_checker.dart';
 import 'design_system/index.dart';
 
 final FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -15,6 +17,7 @@ final Auth0 auth0 =
 
 Future<void> checkStoredCredentials() async {
   final String? accessToken = await secureStorage.read(key: 'accessToken');
+  debugPrint('🔑 Main: Initial login state: ${accessToken != null}');
   isLoggedIn.value = accessToken != null;
 }
 
@@ -29,16 +32,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<Auth>(
-      create: (context) => Auth(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Auth>(
+          create: (context) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, UserProfileProvider>(
+          create: (context) => UserProfileProvider(),
+          update: (context, auth, previous) {
+            // Reload user profile when auth changes
+            Future.microtask(() async {
+              if (await auth.isLoggedIn && previous != null) {
+                previous.loadUserData();
+              } else if (previous != null && !(await auth.isLoggedIn)) {
+                previous.clearData();
+              }
+            });
+            return previous ?? UserProfileProvider();
+          },
+        ),
+      ],
       child: AutoLoginChecker(
-        child: MaterialApp.router(
-          title: 'Booking App',
-          theme: AppTheme.lightTheme,
-          routerDelegate: goRouter.routerDelegate,
-          routeInformationParser: goRouter.routeInformationParser,
-          routeInformationProvider: goRouter.routeInformationProvider,
-          debugShowCheckedModeBanner: false,
+        child: PendingReviewChecker(
+          child: MaterialApp.router(
+            title: 'Booking App',
+            theme: AppTheme.lightTheme,
+            routerDelegate: goRouter.routerDelegate,
+            routeInformationParser: goRouter.routeInformationParser,
+            routeInformationProvider: goRouter.routeInformationProvider,
+            debugShowCheckedModeBanner: false,
+          ),
         ),
       ),
     );

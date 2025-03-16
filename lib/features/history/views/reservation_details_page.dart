@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'package:fatcherappv2/shared/widgets/review_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fatcherappv2/shared/widgets/unified_info_section.dart';
+import 'package:fatcherappv2/providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
 
 class ReservationDetailsPage extends StatefulWidget {
@@ -292,14 +294,22 @@ class _ReservationDetailsPageState extends State<ReservationDetailsPage> {
                   final result = await ReviewDialog.show(
                     context: context,
                     title: 'Review ${reservation!['hotel_name']}',
+                    reservationId: widget.reservationId,
                   );
 
-                  if (result != null) {
+                  if (result != null && result['submitted'] == true) {
                     // Process the review submission
                     print(
                         'Rating: ${result['rating']}, Review: ${result['review']}');
 
-                    // Here you would typically send this to your backend
+                    // Remove from pending reviews if it's there
+                    final userProvider = Provider.of<UserProfileProvider>(
+                        context,
+                        listen: false);
+                    await userProvider
+                        .removePendingReview(widget.reservationId);
+
+                    // Show a confirmation
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Thank you for your review!')),
                     );
