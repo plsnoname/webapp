@@ -1,12 +1,12 @@
 {
-  "date": "2025-03-16",
+  "date": "2025-03-14",
   "address": "789 Happy Paws Blvd, Chicago, IL",
-  "status": "Cancelled",
+  "status": "Completed",
   "hotel_name": "Cozy Critter Lodge",
-  "reservation_code": "Y7Z8A9B1",
+  "reservation_code": "I9J1K2L3",
   "animal": {
     "type": "Dog",
-    "name": "qwerty",
+    "name": "Charlie",
     "breed": "Golden Retriever",
     "age": "5 years"
   },

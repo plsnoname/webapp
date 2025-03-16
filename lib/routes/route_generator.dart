@@ -90,7 +90,10 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: 'reservationDetails',
                   builder: (context, state) {
-                    return ReservationDetailsPage();
+                    final reservationId = state.extra as String;
+                    return ReservationDetailsPage(
+                      reservationId: reservationId,
+                    );
                   },
                   routes: [
                     GoRoute(

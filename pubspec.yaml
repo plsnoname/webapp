@@ -23,7 +23,7 @@ dependencies:
   app_links: ^6.0.0
   flutter_appauth: ^8.0.3
   flutter_inappwebview: ^6.1.5
-
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +44,9 @@ flutter:
     - assets/images/slide3_hotel.jpeg
     - assets/data/reservations.json
     - assets/data/res_form.json
+    - assets/data/E5F6G7H8.json
+    - assets/data/I9J1K2L3.json
+    - assets/data/Q8R9S1T2.json
     - assets/data/reservation_details.json
     - assets/data/chats_list.json
     - assets/data/chat01.json

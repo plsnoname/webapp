@@ -106,6 +106,15 @@
       "animal_name": "Shelly",
       "animal_type": "Tortoise",
       "reservation_code": "S9T1U2V3"
+    },
+    {
+      "date": "2025-03-12",
+      "address": "444 Wing Street, Boston, MA",
+      "status": "Completed",
+      "hotel_name": "Sky High Aviary",
+      "animal_name": "Tweety",
+      "animal_type": "Canary",
+      "reservation_code": "K1L2M3N4"
     }
 ]
 

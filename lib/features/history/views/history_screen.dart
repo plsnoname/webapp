@@ -70,17 +70,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
                         return ReservationItem(
                           reservationCode:
-                              reservation['reservationCode'] ?? 'N/A',
-                          hotelName: reservation['hotelName'] ?? 'N/A',
-                          animalName: reservation['animalName'] ?? 'N/A',
-                          animalType: reservation['animalType'] ?? 'N/A',
+                              reservation['reservation_code'] ?? 'N/A',
+                          hotelName: reservation['hotel_name'] ?? 'N/A',
+                          animalName: reservation['animal_name'] ?? 'N/A',
+                          animalType: reservation['animal_type'] ?? 'N/A',
                           date: reservation['date'] ?? 'N/A',
                           address: reservation['address'] ?? 'N/A',
                           status: reservation['status'] ?? 'N/A',
                           onTap: () {
+                            final reservationCode =
+                                reservation['reservation_code'];
+                            print(
+                                "Navigating to reservation details with ID: $reservationCode");
                             GoRouter.of(context).push(
                               '/history/reservationDetails',
-                              extra: reservation,
+                              extra: reservationCode,
                             );
                           },
                         );

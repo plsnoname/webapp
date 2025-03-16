@@ -3,6 +3,9 @@
   "name": "Smith",
   "phoneNumber": "555-123-4567",
   "location": "San Francisco",
+  "pendingReviews": [
+      "I9J1K2L3",  "Q8R9S1T2"
+    ],
   "animals": [
     {
       "type": "dog",
