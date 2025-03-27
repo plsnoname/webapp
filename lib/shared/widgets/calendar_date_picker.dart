@@ -484,21 +484,6 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
     return !_unavailableDatesMap.containsKey(normalized);
   }
 
-  void _onMonthChanged(bool next) {
-    setState(() {
-      if (next) {
-        _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
-      } else {
-        _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
-      }
-      _displayedMonths = [
-        _currentMonth,
-        DateTime(_currentMonth.year, _currentMonth.month + 1),
-        DateTime(_currentMonth.year, _currentMonth.month + 2),
-      ];
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
