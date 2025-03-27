@@ -1,0 +1,7 @@
+// Add this file to bypass Kotlin version checks
+gradle.beforeProject { project ->
+    project.extensions.extraProperties["android.defaults.buildfeatures.buildconfig"] = true
+    project.extensions.extraProperties["android.useAndroidX"] = true
+    project.extensions.extraProperties["android.enableJetifier"] = true
+    project.extensions.extraProperties["kotlin.code.style"] = "official"
+}

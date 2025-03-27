@@ -1,0 +1,22 @@
+{
+  "chats": [
+    {
+      "chatId": "CHAT001",
+      "name": "Alice",
+      "lastMessage": "Hey, how are you?",
+      "unreadMessages": 2
+    },
+    {
+      "chatId": "CHAT002",
+      "name": "Bob",
+      "lastMessage": "See you tomorrow!",
+      "unreadMessages": 0
+    },
+    {
+      "chatId": "CHAT003",
+      "name": "Charlie",
+      "lastMessage": "Can you send me the files?",
+      "unreadMessages": 1
+    }
+  ]
+}

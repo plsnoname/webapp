@@ -167,5 +167,13 @@ final goRouter = GoRouter(
         return InAppWebViewPage(url: url);
       },
     ),
+    // Add a callback route for the Auth0 redirect
+    GoRoute(
+      path: '/callback',
+      builder: (context, state) {
+        // The auth provider will handle this automatically on initialization
+        return const Center(child: CircularProgressIndicator());
+      },
+    ),
   ],
 );

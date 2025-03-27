@@ -5,21 +5,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
+import 'package:universal_html/html.dart' as html;
 
 class Auth with ChangeNotifier {
   static const String domain = 'dev-fetcher.eu.auth0.com';
   static const String clientId = 'i6dbl8SB0sjWf4oAf0K9NzNTHB1rRWyL';
-  static const String redirectUri =
-      'com.example.fatcherappv2://dev-fetcher.eu.auth0.com/android/com.example.fatcherappv2/callback';
-  static const String logoutUri =
-      'com.example.fatcherappv2://dev-fetcher.eu.auth0.com/android/com.example.fatcherappv2/logout';
+  // Update to web URLs (localhost:8888)
+  static const String redirectUri = 'http://localhost:8888/callback';
+  static const String logoutUri = 'http://localhost:8888/';
 
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage(
+    webOptions: WebOptions(
+      dbName: 'fetcher_auth',
+      publicKey: 'fetcher_public_key',
+    ),
+  );
   bool _isLoggedIn = false;
 
   Auth() {
     // Check login status on initialization
     _checkLoginStatus();
+    // Check if we're on a callback URL
+    _checkForAuthCallback();
+  }
+
+  // Method to check if current URL has auth parameters
+  void _checkForAuthCallback() {
+    final uri = Uri.parse(html.window.location.href);
+    if (uri.path == '/callback' && uri.queryParameters.containsKey('code')) {
+      handleAuthCallback(uri);
+      // Clean the URL after handling the callback
+      html.window.history.pushState(null, '', '/');
+    }
   }
 
   // Public getter to access login state
@@ -56,56 +73,8 @@ class Auth with ChangeNotifier {
           '&redirect_uri=$redirectUri'
           '&scope=openid email');
 
-      final result =
-          await context.push<String>('/in-app-webview', extra: url.toString());
-
-      if (result != null) {
-        final uri = Uri.parse(result);
-        final queryParams = uri.queryParameters;
-        final code = queryParams['code'];
-        if (code == null) {
-          throw Exception('Authorization code not found in callback URL');
-        }
-
-        final storedVerifier = await secureStorage.read(key: 'code_verifier');
-        if (storedVerifier == null) {
-          throw Exception('Code verifier not found in secure storage');
-        }
-
-        final response = await http.post(
-          Uri.parse('https://$domain/oauth/token'),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode({
-            'grant_type': 'authorization_code',
-            'client_id': clientId,
-            'code': code,
-            'code_verifier': storedVerifier,
-            'redirect_uri': redirectUri,
-          }),
-        );
-
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-
-          await secureStorage.write(
-              key: 'accessToken', value: data['access_token']);
-          await secureStorage.write(
-              key: 'refreshToken', value: data['refresh_token']);
-          await secureStorage.write(
-            key: 'expiresAt',
-            value: (DateTime.now().millisecondsSinceEpoch +
-                    (data['expires_in'] * 1000))
-                .toString(),
-          );
-
-          debugPrint('Access Token: ${data['access_token']}');
-          debugPrint('Refresh Token: ${data['refresh_token']}');
-          _isLoggedIn = true;
-          notifyListeners();
-        } else {
-          debugPrint('Token exchange failed: ${response.body}');
-        }
-      }
+      // In web, we redirect directly
+      html.window.location.href = url.toString();
     } catch (e) {
       debugPrint('Login error: $e');
     }
@@ -205,7 +174,9 @@ class Auth with ChangeNotifier {
         'client_id': clientId,
         'returnTo': logoutUri,
       });
-      await context.push<String>('/in-app-webview', extra: url.toString());
+      
+      // For web, redirect directly to logout URL
+      html.window.location.href = url.toString();
       _isLoggedIn = false;
       notifyListeners();
     } catch (e) {

@@ -3,11 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
-// To do: use this to do magic
-
 class ReservationDateManager {
   static Map<String, Map<DateTime, bool>> _blockedDates = {};
 
+  // Modified method to accept unavailable dates directly
+  static void setUnavailableDates(String roomType, int roomNumber, List<DateTime> unavailableDates) {
+    final String roomKey = '${roomType}_${roomNumber}';
+    _blockedDates[roomKey] = {};
+    
+    for (var date in unavailableDates) {
+      _blockedDates[roomKey]![DateTime(date.year, date.month, date.day)] = true;
+    }
+  }
+
+  // Original method kept for backward compatibility
   static Future<void> loadReservations(String roomType, int roomNumber) async {
     try {
       final String response =
@@ -54,6 +63,7 @@ class ReservationDateManager {
   }
 }
 
+// Updated function to accept a list of unavailable dates
 Future<DateTimeRange?> showCustomDateRangePicker({
   required BuildContext context,
   required DateTime initialDate,
@@ -62,11 +72,18 @@ Future<DateTimeRange?> showCustomDateRangePicker({
   required String roomType,
   required int roomNumber,
   DateTimeRange? initialDateRange,
+  List<DateTime>? unavailableDates,
 }) async {
-  await ReservationDateManager.loadReservations(roomType, roomNumber);
+  // If unavailableDates is provided, use them directly
+  if (unavailableDates != null) {
+    ReservationDateManager.setUnavailableDates(roomType, roomNumber, unavailableDates);
+  } else {
+    // Otherwise fall back to loading from JSON
+    await ReservationDateManager.loadReservations(roomType, roomNumber);
+  }
 
-  DateTime? startDate;
-  DateTime? endDate;
+  DateTime? startDate = initialDateRange?.start;
+  DateTime? endDate = initialDateRange?.end;
 
   return await showDialog<DateTimeRange>(
     context: context,
@@ -141,7 +158,19 @@ Future<DateTimeRange?> showCustomDateRangePicker({
                     ),
                   ),
 
-                  // Footer
+                  // Footer with selected date range info
+                  if (startDate != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Text(
+                        endDate != null 
+                            ? '${DateFormat('MMM d, yyyy').format(startDate!)} - ${DateFormat('MMM d, yyyy').format(endDate!)}'
+                            : 'From ${DateFormat('MMM d, yyyy').format(startDate!)}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+
+                  // Buttons
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
@@ -174,6 +203,30 @@ Future<DateTimeRange?> showCustomDateRangePicker({
         },
       );
     },
+  );
+}
+
+// Helper function to easily show the date picker from any view
+Future<DateTimeRange?> showHotelDatePicker({
+  required BuildContext context,
+  required String hotelId, // Can be used to fetch specific hotel availability
+  List<DateTime>? unavailableDates,
+  DateTimeRange? initialDateRange,
+}) {
+  final now = DateTime.now();
+  final initialDate = initialDateRange?.start ?? now;
+  final firstDate = now;
+  final lastDate = DateTime(now.year + 1, now.month, now.day);
+  
+  return showCustomDateRangePicker(
+    context: context,
+    initialDate: initialDate,
+    firstDate: firstDate,
+    lastDate: lastDate,
+    roomType: hotelId, // Use hotelId as the room type
+    roomNumber: 1, // Default room number
+    initialDateRange: initialDateRange,
+    unavailableDates: unavailableDates,
   );
 }
 
@@ -370,14 +423,17 @@ void _handleDateTap(
   });
 }
 
+// Updated CustomDateRangePicker to support unavailable dates
 class CustomDateRangePicker extends StatefulWidget {
   final String selectedMonth;
   final Map<String, List<List<bool>>> occupancyData;
+  final List<DateTime>? unavailableDates;
 
   const CustomDateRangePicker({
     Key? key,
     required this.selectedMonth,
     required this.occupancyData,
+    this.unavailableDates,
   }) : super(key: key);
 
   @override
@@ -387,6 +443,7 @@ class CustomDateRangePicker extends StatefulWidget {
 class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
   late DateTime _currentMonth;
   late List<DateTime> _displayedMonths;
+  late Map<DateTime, bool> _unavailableDatesMap;
 
   @override
   void initState() {
@@ -407,6 +464,24 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
       DateTime(_currentMonth.year, _currentMonth.month + 10),
       DateTime(_currentMonth.year, _currentMonth.month + 11),
     ];
+    
+    // Convert unavailable dates to a map for faster lookup
+    _unavailableDatesMap = {};
+    widget.unavailableDates?.forEach((date) {
+      final normalized = DateTime(date.year, date.month, date.day);
+      _unavailableDatesMap[normalized] = true;
+    });
+  }
+
+  bool _isDateAvailable(DateTime date) {
+    final normalized = DateTime(date.year, date.month, date.day);
+    final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    
+    if (normalized.isBefore(today)) {
+      return false;
+    }
+    
+    return !_unavailableDatesMap.containsKey(normalized);
   }
 
   void _onMonthChanged(bool next) {
@@ -435,7 +510,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                       month,
                       null, // startDate
                       null, // endDate
-                      (date) => true, // isDateAvailable
+                      _isDateAvailable, // Custom date availability function
                       (_) {}, // updateDates
                     ))
                 .toList(),

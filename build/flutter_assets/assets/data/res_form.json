@@ -1,0 +1,26 @@
+{
+    "type" : "Dog, Cat, Other",
+    "animalQuestions" : ["Name", "Breed", "Age"],
+    "hotelQuestions" : [
+        "Does your pet have any allergies?",
+        "Is your pet on any medication?",
+        "How often does your pet need to be fed?"
+    ],
+    "accepted_payment_methods": [
+    "Visa",
+    "Mastercard",
+    "American Express",
+    "PayPal",
+    "Apple Pay",
+    "Google Pay",
+    "Bank Transfer"
+  ],
+    "extra_options": [
+    { "name": "Gift Wrapping", "price": 5.00, "question": "Whatever idk just for the stunt" },
+    { "name": "Express Shipping", "price": 15.00 },
+    { "name": "Extended Warranty", "price": 20.00 },
+    { "name": "Personalized Message", "price": 3.00, "question": "What message would you like to include?" },
+    { "name": "Premium Packaging", "price": 10.00 }
+  ]
+  
+}

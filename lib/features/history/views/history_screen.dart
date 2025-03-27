@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fatcherappv2/features/authentication/login_guard.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:go_router/go_router.dart';
@@ -39,8 +38,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginGuard(
-      child: Scaffold(
+    return Scaffold(
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -94,7 +92,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
           ],
         ),
-      ),
+      
     );
   }
 }

@@ -1,0 +1,34 @@
+{
+  "reviews": [
+    {
+      "date": "2024-03-10",
+      "author": "Sarah Johnson",
+      "rating": 5,
+      "message": "Amazing experience! My golden retriever, Max, had the best time. The staff was so caring and attentive. Highly recommend!"
+    },
+    {
+      "date": "2024-02-25",
+      "author": "David Smith",
+      "rating": 4,
+      "message": "Great place for dogs. My Labrador seemed very happy. Only reason for 4 stars is that pick-up took a little longer than expected."
+    },
+    {
+      "date": "2024-01-15",
+      "author": "Emily Brown",
+      "rating": 5,
+      "message": "My poodle Bella absolutely loved her stay! The hotel was clean, well-managed, and the staff provided regular updates."
+    },
+    {
+      "date": "2023-12-20",
+      "author": "Michael Lee",
+      "rating": 3,
+      "message": "Decent service, but my dog came back a little anxious. I wish they had sent more updates during the stay."
+    },
+    {
+      "date": "2023-11-30",
+      "author": "Jessica Martinez",
+      "rating": 5,
+      "message": "Absolutely fantastic! My dog loved the play area, and the staff went above and beyond. Will definitely return."
+    }
+  ]
+}

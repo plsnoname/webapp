@@ -1,0 +1,147 @@
+{
+  "userId": "USER001",
+  "messages": [
+    {
+      "id": "MSG001",
+      "content": "Hey, how's it going?",
+      "metadata": {
+        "timestamp": "2025-03-13T10:15:00",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG002",
+      "content": "Hey! I'm good, just busy with work. You?",
+      "metadata": {
+        "timestamp": "2025-03-13T10:16:30",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG003",
+      "content": "Same here, work's been hectic lately.",
+      "metadata": {
+        "timestamp": "2025-03-13T10:18:00",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG004",
+      "content": "Yeah, I feel that. Any plans for the weekend?",
+      "metadata": {
+        "timestamp": "2025-03-13T10:19:45",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG005",
+      "content": "Thinking about going hiking. You in?",
+      "metadata": {
+        "timestamp": "2025-03-13T10:21:10",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG006",
+      "content": "Sounds fun! What time?",
+      "metadata": {
+        "timestamp": "2025-03-13T10:22:30",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG007",
+      "content": "Maybe around 8 AM? The earlier, the better.",
+      "metadata": {
+        "timestamp": "2025-03-13T10:23:45",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG008",
+      "content": "Alright, I'm in! I'll bring snacks.",
+      "metadata": {
+        "timestamp": "2025-03-13T10:25:00",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG009",
+      "content": "Nice! See you then.",
+      "metadata": {
+        "timestamp": "2025-03-13T10:26:15",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG010",
+      "content": "See you!",
+      "metadata": {
+        "timestamp": "2025-03-13T10:27:30",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG011",
+      "content": "By the way, do you have a spare water bottle?",
+      "metadata": {
+        "timestamp": "2025-03-13T10:28:45",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG012",
+      "content": "Yeah, I got you. I'll bring an extra one.",
+      "metadata": {
+        "timestamp": "2025-03-13T10:30:00",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG013",
+      "content": "Awesome, thanks!",
+      "metadata": {
+        "timestamp": "2025-03-13T10:31:15",
+        "senderId": "USER002",
+        "type": "friend",
+        "read": true
+      }
+    },
+    {
+      "id": "MSG014",
+      "content": "No problem! Looking forward to it.",
+      "metadata": {
+        "timestamp": "2025-03-13T10:32:30",
+        "senderId": "USER001",
+        "type": "user",
+        "read": true
+      }
+    }
+  ],
+  "unreadCount": 0,
+  "lastActivity": "2025-03-13T10:32:30"
+}

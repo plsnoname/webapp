@@ -1,0 +1,36 @@
+{
+  "date": "2025-03-14",
+  "address": "789 Happy Paws Blvd, Chicago, IL",
+  "status": "Completed",
+  "hotel_name": "Cozy Critter Lodge",
+  "reservation_code": "I9J1K2L3",
+  "animal": {
+    "type": "Dog",
+    "name": "Charlie",
+    "breed": "Golden Retriever",
+    "age": "5 years"
+  },
+  "health_info": {
+    "allergies": "Peanuts",
+    "medications": "Anti-allergy tablets",
+    "feeding_schedule": "Three times a day"
+  },
+  "questions": [
+    { "question": "Does your pet have any allergies?", "answer": "Peanuts" },
+    { "question": "Is your pet on any medication?", "answer": "Anti-allergy tablets" },
+    { "question": "How often does your pet need to be fed?", "answer": "Three times a day" }
+  ],
+  "payment": "PayPal",
+  "extra_options": [
+    {
+      "name": "Gift Wrapping",
+      "price": 5.00,
+      "response": "Wrap it with blue ribbon."
+    },
+    {
+      "name": "Personalized Message",
+      "price": 3.00,
+      "response": "Enjoy your stay, Charlie!"
+    }
+  ]
+}
