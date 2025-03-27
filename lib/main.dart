@@ -23,7 +23,6 @@ final Auth0 auth0 =
 
 Future<void> checkStoredCredentials() async {
   final String? accessToken = await secureStorage.read(key: 'accessToken');
-  debugPrint('🔑 Main: Initial login state: ${accessToken != null}');
   isLoggedIn.value = accessToken != null;
 }
 

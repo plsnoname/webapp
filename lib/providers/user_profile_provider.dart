@@ -25,12 +25,8 @@ class UserProfileProvider with ChangeNotifier {
       _isLoading = true;
       // Don't notify here - we'll notify after data is loaded
 
-      debugPrint('📝 UserProfileProvider: Loading user data');
-
-      // Check for logged in status
       final String? accessToken = await _secureStorage.read(key: 'accessToken');
       if (accessToken == null) {
-        debugPrint('⚠️ UserProfileProvider: No access token found');
         _isLoading = false;
         notifyListeners();
         return;
@@ -39,23 +35,16 @@ class UserProfileProvider with ChangeNotifier {
       // Load user data from json file
       final String response =
           await rootBundle.loadString('assets/data/usr01.json');
-
-      debugPrint('✅ UserProfileProvider: User data loaded successfully');
       _userData = json.decode(response);
 
       // Extract pending reviews
       if (_userData != null && _userData!.containsKey('pendingReviews')) {
         _pendingReviews = List<String>.from(_userData!['pendingReviews']);
-        debugPrint(
-            '📋 UserProfileProvider: Found ${_pendingReviews.length} pending reviews');
-      } else {
-        debugPrint('⚠️ UserProfileProvider: No pending reviews found in data');
       }
 
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      debugPrint('❌ UserProfileProvider: Error loading user data: $e');
       _error = 'Failed to load user data: $e';
       _isLoading = false;
       notifyListeners();
@@ -65,9 +54,6 @@ class UserProfileProvider with ChangeNotifier {
   // Remove a reservation ID from pending reviews
   Future<void> removePendingReview(String reservationId) async {
     if (_userData == null) return;
-
-    debugPrint(
-        '🗑️ UserProfileProvider: Removing pending review: $reservationId');
 
     _pendingReviews.remove(reservationId);
 
@@ -84,8 +70,6 @@ class UserProfileProvider with ChangeNotifier {
       key: 'pendingReviews',
       value: json.encode(_pendingReviews),
     );
-
-    debugPrint('✅ UserProfileProvider: Pending review removed successfully');
   }
 
   // Check if there are any pending reviews

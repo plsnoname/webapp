@@ -28,8 +28,6 @@ class _HotelListScreenState extends State<HotelListScreen> {
       setState(() {
         _selectedDateRange = result;
       });
-      // Use the selected dates for filtering
-      print('Selected: ${result.start} - ${result.end}');
     }
   }
 

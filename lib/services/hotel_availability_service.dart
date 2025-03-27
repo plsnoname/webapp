@@ -33,7 +33,6 @@ class HotelAvailabilityService {
       
       return occupiedDates;
     } catch (e) {
-      print('Error loading occupied dates: $e');
       return [];
     }
   }

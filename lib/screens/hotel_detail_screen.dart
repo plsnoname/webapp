@@ -45,9 +45,6 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
       setState(() {
         _selectedDateRange = result;
       });
-      
-      // Here you might update room availability or pricing
-      print('Selected dates for ${widget.hotelName}: ${result.start} to ${result.end}');
     }
   }
 

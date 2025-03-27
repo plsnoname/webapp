@@ -50,9 +50,6 @@ class ReservationReviewSection extends StatelessWidget {
     );
 
     if (result != null && result['submitted'] == true) {
-      // Process the review submission
-      print('Rating: ${result['rating']}, Review: ${result['review']}');
-
       // Remove from pending reviews if it's there
       final userProvider =
           Provider.of<UserProfileProvider>(context, listen: false);

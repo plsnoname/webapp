@@ -83,7 +83,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
         _userPets = List<Map<String, dynamic>>.from(data['animals']);
       });
     } catch (e) {
-      print('Error loading user pets: $e');
+      // Silent error handling
     }
   }
 
@@ -543,7 +543,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
     bool isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
-      print('Form Data: $formData');
+      // Handle form submission
     } else {
       // Find the first invalid field and navigate to its section
       for (int i = 0; i < 4; i++) {

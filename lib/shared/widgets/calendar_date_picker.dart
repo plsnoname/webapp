@@ -45,7 +45,7 @@ class ReservationDateManager {
         }
       }
     } catch (e) {
-      print('Error loading reservations: $e');
+      // Silent error handling
     }
   }
 

@@ -29,10 +29,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
       setState(() {
         reservations = List<Map<String, dynamic>>.from(data);
       });
-
-      print("Loaded Reservations: ${reservations.length}");
     } catch (e) {
-      print("Error loading reservations: $e");
+      // Silent error handling
     }
   }
 
@@ -78,8 +76,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           onTap: () {
                             final reservationCode =
                                 reservation['reservation_code'];
-                            print(
-                                "Navigating to reservation details with ID: $reservationCode");
                             GoRouter.of(context).push(
                               '/history/reservationDetails',
                               extra: reservationCode,
