@@ -9,7 +9,6 @@ import 'package:universal_html/html.dart' as html;
 class Auth with ChangeNotifier {
   static const String domain = 'dev-fetcher.eu.auth0.com';
   static const String clientId = 'i6dbl8SB0sjWf4oAf0K9NzNTHB1rRWyL';
-  // Update to web URLs (localhost:8888)
   static const String redirectUri = 'http://localhost:8888/callback';
   static const String logoutUri = 'http://localhost:8888/';
 
@@ -22,37 +21,29 @@ class Auth with ChangeNotifier {
   bool _isLoggedIn = false;
 
   Auth() {
-    // Check login status on initialization
     _checkLoginStatus();
-    // Check if we're on a callback URL
     _checkForAuthCallback();
   }
 
-  // Method to check if current URL has auth parameters
   void _checkForAuthCallback() {
     final uri = Uri.parse(html.window.location.href);
     if (uri.path == '/callback' && uri.queryParameters.containsKey('code')) {
       handleAuthCallback(uri);
-      // Clean the URL after handling the callback
       html.window.history.pushState(null, '', '/');
     }
   }
 
-  // Public getter to access login state
   Future<bool> get isLoggedIn async {
     await _checkLoginStatus();
     return _isLoggedIn;
   }
 
-  // Check if user is logged in by looking for an access token
   Future<void> _checkLoginStatus() async {
     final String? accessToken = await secureStorage.read(key: 'accessToken');
     final bool wasLoggedIn = _isLoggedIn;
     _isLoggedIn = accessToken != null;
 
-    // Only notify if state actually changed
     if (wasLoggedIn != _isLoggedIn) {
-      debugPrint('🔐 Auth: Login state changed to: $_isLoggedIn');
       notifyListeners();
     }
   }
@@ -72,10 +63,9 @@ class Auth with ChangeNotifier {
           '&redirect_uri=$redirectUri'
           '&scope=openid email');
 
-      // In web, we redirect directly
       html.window.location.href = url.toString();
     } catch (e) {
-      debugPrint('Login error: $e');
+      // Silent error handling
     }
   }
 
@@ -120,10 +110,10 @@ class Auth with ChangeNotifier {
         _isLoggedIn = true;
         notifyListeners();
       } else {
-        debugPrint('Token exchange failed: ${response.body}');
+        // Silent error handling
       }
     } catch (e) {
-      debugPrint('Auth callback error: $e');
+      // Silent error handling
     }
   }
 
@@ -157,7 +147,6 @@ class Auth with ChangeNotifier {
         );
         _isLoggedIn = true;
         notifyListeners();
-        debugPrint('Access Token refreshed: ${data['access_token']}');
       } else {
         debugPrint('Token refresh failed: ${response.body}');
       }
@@ -174,7 +163,6 @@ class Auth with ChangeNotifier {
         'returnTo': logoutUri,
       });
       
-      // For web, redirect directly to logout URL
       html.window.location.href = url.toString();
       _isLoggedIn = false;
       notifyListeners();

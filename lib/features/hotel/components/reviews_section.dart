@@ -35,7 +35,7 @@ class _ReviewsSectionState extends State<ReviewsSection> {
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load reviews: $e';
+        _errorMessage = 'Failed to load reviews';
         _isLoading = false;
       });
     }

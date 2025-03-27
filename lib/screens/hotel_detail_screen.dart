@@ -216,7 +216,6 @@ class _HotelDetailScreenState extends State<HotelDetailScreen> {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Proceed to booking
-                                print('Booking ${widget.hotelName} from ${_selectedDateRange!.start} to ${_selectedDateRange!.end}');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,

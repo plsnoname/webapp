@@ -14,7 +14,6 @@ class ReviewService {
           .map((reviewJson) => Review.fromJson(reviewJson))
           .toList();
     } catch (e) {
-      print('Error loading reviews: $e');
       return [];
     }
   }

@@ -51,7 +51,7 @@ class _DynamicFormScreenState extends State<DynamicFormScreen> {
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load form data: $e';
+        _errorMessage = 'Failed to load form data';
         _isLoading = false;
       });
     }
